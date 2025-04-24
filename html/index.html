@@ -5,25 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-commerce</title>
     <link rel="stylesheet" href="../css/estilo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+
+        a{
+            text-decoration: none;
+        }
+
+        p{
+            font-size: 10px;
+        }
+
+        a:visited{
+            color: black;
+            text-decoration: none;
+        }
+
+
+        li a:hover{
+            color: blue;
+            cursor: pointer;
+        }
+
+        /*Cabecalho*/
         header{
+            background-color: white;
+            height: 100px;
             
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 100px;
+
+            place-items: center;
         }
         header ul{
             list-style: none;
+            font-size: 15px;
+            color: black;
+            
 
             display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
         }
+
+        .itens_topo{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+        }
+
+        .itens_topo a{
+            padding: 5px;
+        }
+
+        .itens_topo a:hover{
+            color: blue;
+            background-color: rgba(0,0,255, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        /*Rodape*/
+        .footer_cima {
+        place-items: center;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        align-items: start;      
+        gap: 1rem;
+        }
+
+        .footer_cima > div {
+        align-self: start;
+        }
+
+        .footer_cima ul {
+        margin: 0;
+        padding: 0;             
+        }
+
+        footer h3,
+        footer a {
+        font-size: 12px;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        }
+        
+        footer a:hover{
+        color: blue;
+        }
+
+        footer p{
+            font-size: 9px;
+        }
+ 
+        #descricao p{
+            width: 100px;
+        }
+        
+        #compras a{
+            font-size: 9px;
+            font-weight: normal;
+        }
+
+        #compras a:hover{
+            color: blue;
+        }
+
+        .todos_direitos{
+            font-size: 11px;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <div id="logo">
-            <img src="" alt="nome da loja">
+        <div id="icone">
+            <a href="">
+                <span style="color: blue;">Buy</span><span style="color: gray;">Things</span>
+            </a>
         </div>
         
         <ul>
@@ -32,10 +134,16 @@
             <li><a href="">Contact</a></li>
         </ul>
 
-        <div>
-            <a href=""><img src="" alt="busca"></a>
-            <a href=""><img src="" alt="carrinho de compras"></a>
-            <a href=""><img src="" alt="perfil"></a>
+        <div class="itens_topo">
+            <a href="">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </a>
+            <a href="">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+            <a href="">
+                <i class="fa-solid fa-user"></i>
+            </a>
         </div>
     </header>
 
@@ -81,38 +189,35 @@
                 </a>
             </div>
 
-            <footer> 
-                <div>
-            
-                    <div>
-                        <h3>Descrição</h3>
-                        <p></p>
-                    </div>  
-
-                    <div>
-                        <h3>Compras</h3>
-                        <ul>
-
-                        </ul>
-                    </div>
-
-                    <div>
-                        <a href="">Contato</a>
-                    </div>
-                    <div>
-                        <a href="">Sobre</a>
-                    </div>
-                </div>
-
-                <div>
-                    <div>
-                        &#169; Todos direitos reservados
-                    </div>
-                </div>
-            </footer>
-
         </section>
     </main>
+
+
+    <footer> 
+        <div class="footer_cima">
+    
+            <div id="descricao">
+                <h3>BuyThings</h3>
+                <p>Compre itens de forma fácil e rápida direto para sua casa</p>
+            </div>  
+
+            <div id="compras">
+                <h3>Compras</h3>
+                <a href="">Todos os produtos</a>
+            </div>
+
+            <div id="Contato">
+                <a href="">Contato</a>
+            </div>
+            <div id="Sobre">
+                <a href="">Sobre</a>
+            </div>
+        </div>
+
+        <div class="todos_direitos">
+           &#169; Todos direitos reservados
+        </div>
+    </footer>
 
     <script src="../javascript/script.js"></script>
 </body>
