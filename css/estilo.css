@@ -187,7 +187,7 @@ footer p {
     justify-content: space-evenly;
     align-items: center;
     padding: 20px 10px;
-}
+} 
 
 .card-footer-produto .btn-comprar-produto {
     background-color: hsl(221 83% 53%);
