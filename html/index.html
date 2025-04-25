@@ -6,7 +6,9 @@
     <title>e-commerce</title>
     <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"/>
 </head>
 <body>
 
@@ -23,7 +25,7 @@
             <li><a href="">Contact</a></li>
         </ul>
 
-        <div class="itens_topo">
+        <div class="itens_topo"> 
             <a href="">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </a>
@@ -37,47 +39,131 @@
     </header>
 
     <main>
-        <section id="">
-
+        <section class="banner">
+            <h1>Bem-vindo a Buy Things</h1>
+            <p>Descubra produtos incríveis para todas as necessidades com frete grátis em compras acima de R$250</p>
         </section>
-        
-        <section id="conteudo">
-            
-            <div class="destaque">
-                <h2>Destaque</h2>
-                <div class="produto">
-                    <img src="" alt="produto">
-                    <h3>Nome do produto</h3>
-                    <p>preço</p>
-                    
-                    <a href="" class="detalhes">Detalhes</a>
-                    <button class="add_carrinho"></button>
+    
+        <section class="destaque">
+            <div class="container">
+                <h2>Produtos em destaques</h2>
+                <div class="linha-produtos">
+                    <a href="#" class="card-produto">
+                        <div class="card-img-produto">
+                            <img src="	https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80"
+                                alt="Produto 1">
+                        </div>
+                        <div class="card-body-produto">
+                            <h3 class="titulo-produto">Premium Wireless Headphones</h3>
+                            <p class="preco-produto">R$459,99</p>
+                        </div>
+                        <div class="card-footer-produto">
+                            <button onclick="window.location.href='#'" class="btn-detalhe-produto">Ver Detalhes</button>
+                            <button type="button" class="btn-comprar-produto"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+                        </div>
+                    </a>
+                    <a href="#" class="card-produto">
+                        <div class="card-img-produto">
+                            <img src="https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&auto=format&fit=crop&q=80"
+                                alt="Produto 1">
+                        </div>
+                        <div class="card-body-produto">
+                            <h3 class="titulo-produto">Ergonomic Office Chair</h3>
+                            <p class="preco-produto">R$459,99</p>
+                        </div>
+                        <div class="card-footer-produto">
+                            <button onclick="window.location.href='#'" class="btn-detalhe-produto">Ver Detalhes</button>
+                            <button type="button" class="btn-comprar-produto"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+                        </div>
+                    </a>
+                    <a href="#" class="card-produto">
+                        <div class="card-img-produto">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80"
+                                alt="Produto 1">
+                        </div>
+                        <div class="card-body-produto">
+                            <h3 class="titulo-produto">Smart Fitness Watch</h3>
+                            <p class="preco-produto">R$459,99</p>
+                        </div>
+                        <div class="card-footer-produto">
+                            <button onclick="window.location.href='#'" class="btn-detalhe-produto">Ver Detalhes</button>
+                            <button type="button" class="btn-comprar-produto"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+                        </div>
+                    </a>
+                    <a href="#" class="card-produto">
+                        <div class="card-img-produto">
+                            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop&q=80"
+                                alt="Produto 1">
+                        </div>
+                        <div class="card-body-produto">
+                            <h3 class="titulo-produto">Leather Messenger Bag</h3>
+                            <p class="preco-produto">R$459,99</p>
+                        </div>
+                        <div class="card-footer-produto">
+                            <button onclick="window.location.href='#'" class="btn-detalhe-produto">Ver Detalhes</button>
+                            <button type="button" class="btn-comprar-produto"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+                        </div>
+                    </a>
                 </div>
             </div>
-            
-
-            <div id="categorias">
-                <a href="">
-                    <h3>Eletrônicos</h3>
-                    <p></p>
-                </a>
-
-                <a href="">
-                    <h3>Móveis</h3>
-                    <p></p>
-                </a>
-
-                <a href="">
-                    <h3>Roupas</h3>
-                    <p></p>
-                </a>
-
-                <a href="">
-                    <h3>Casa e cozinha</h3>
-                    <p></p>
-                </a>
+        </section>
+    
+        <section class="categorias">
+            <div class="container">
+                <h2>Categorias</h2>
+                <div class="linha-categorias">
+                    <a href="#" class="card-categoria"
+                        style="background-image: url(https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600&h=400&fit=crop&q=80);">
+                        <div class="overlay-categoria"></div>
+                        <div class="card-body-categoria">
+                            <h3>Eletrônicos</h3>
+                            <p>Os últimos lançamentos em eletrônicos</p>
+                        </div>
+                    </a>
+                    <a href="#" class="card-categoria"
+                        style="background-image: url(https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop&q=80);">
+                        <div class="overlay-categoria"></div>
+                        <div class="card-body-categoria">
+                            <h3>Móveis</h3>
+                            <p>Móveis estilosos para a sua casa</p>
+                        </div>
+                    </a>
+                    <a href="#" class="card-categoria"
+                        style="background-image: url(	https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=400&fit=crop&q=80);">
+                        <div class="overlay-categoria"></div>
+                        <div class="card-body-categoria">
+                            <h3>Moda</h3>
+                            <p>Roupas da moda e acessorios</p>
+                        </div>
+                    </a>
+                    <a href="#" class="card-categoria"
+                        style="background-image: url(https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&h=400&fit=crop&q=80);">
+                        <div class="overlay-categoria"></div>
+                        <div class="card-body-categoria">
+                            <h3>Casa & Cozinha</h3>
+                            <p>Itens essenciais para sua casa</p>
+                        </div>
+                    </a>
+    
+                </div>
             </div>
-
+        </section>
+    
+        <section class="cta-home">
+            <div class="container">
+               <div class="linha-cta-home">
+                    <div class="liquidacao">
+                        <h2>Liquidação de outono</h2>
+                        <p>Aproveite descontos de até 50% em produtos selecionados.</p>
+                        <a href="#" class="btn-cta-home">Ver Ofertas</a>
+                    </div>
+                    <div class="novidades">
+                        <h2>Últimos lançamentos</h2>
+                        <p>Confira as nossas novidades</p>
+                        <a href="#" class="btn-cta-home">Ver novidades</a>
+                    </div>
+               </div>
+            </div>
         </section>
     </main>
 
