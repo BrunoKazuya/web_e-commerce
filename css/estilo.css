@@ -236,8 +236,8 @@ footer p{
 }
 
 .colunas {
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: column;
 }
 
 .linha1{
@@ -258,7 +258,8 @@ footer p{
 }
 
 .linha2{
-    word-break: break-all;
+    font-size: 9px;
+    word-break:normal;
 }
 
 .linha3{
