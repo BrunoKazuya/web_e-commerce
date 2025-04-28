@@ -29,6 +29,19 @@
 
 ### 2.2 Estrutura do projeto
 ```
+├── capturas
+│   ├── adm1.png
+│   ├── cadastro.png
+│   ├── carrinho.png
+│   ├── contato.png
+│   ├── home1.png
+│   ├── home2.png
+│   ├── home3.png
+│   ├── login.png
+│   ├── produtos1.png
+│   ├── produtos2.png
+│   ├── sobre.png
+│   ├── user.png
 ├── css
 │   ├── estilo.css
 ├── html
@@ -44,19 +57,6 @@
 │   ├── produto4.avif
 │   ├── produto5.avif
 │   ├── produto6.avif
-├── capturas
-│   ├── adm1.png
-│   ├── cadastro.png
-│   ├── carrinho.png
-│   ├── contato.png
-│   ├── home1.png
-│   ├── home2.png
-│   ├── home3.png
-│   ├── login.png
-│   ├── produtos1.png
-│   ├── produtos2.png
-│   ├── sobre.png
-│   ├── user.png
 ├── readme.md
 ```
 
