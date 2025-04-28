@@ -5,7 +5,7 @@
 | Integrante | Nº USP |
 |------------|--------|
 | Bruno Kazuya Yamato Sakaji | 14562466 |
-| Guilherme Pacheco | 11797091 |
+| Guilherme Pacheco de Oliveira Souza | 11797091 |
 | Leonardo Marangoni | 14747614 |
 
 ---
