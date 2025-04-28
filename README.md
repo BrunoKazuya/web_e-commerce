@@ -44,10 +44,6 @@
 │   ├── user.png
 ├── css
 │   ├── estilo.css
-├── html
-│   ├── carrinho.html
-│   ├── index.html
-|   ├── products.html
 ├── img
 │   ├── diagrama.jpg
 │   ├── image.png
@@ -59,6 +55,9 @@
 │   ├── produto6.avif
 ├── javascript
 │   ├── script.js
+├── carrinho.html
+├── index.html
+├── products.html
 ├── readme.md
 ```
 
