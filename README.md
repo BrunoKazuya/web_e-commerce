@@ -57,6 +57,8 @@
 │   ├── produto4.avif
 │   ├── produto5.avif
 │   ├── produto6.avif
+├── javascript
+│   ├── script.js
 ├── readme.md
 ```
 
