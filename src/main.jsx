@@ -1,67 +1,69 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import AboutPage from './pages/AboutPage.jsx'
-import IndexPage from './pages/IndexPage.jsx'
-import AuthPage from './pages/AuthPage.jsx'
-import CartPage from './pages/CartPage.jsx'
-import ContactPage from './pages/ContactPage.jsx'
-import ProductDetailPage from './pages/ProductDetailPage.jsx'
-import ProductsPage from './pages/ProductsPage.jsx'
-import Dashboard from './pages/admin/Dashboard.jsx'
-import ProfilePage from './pages/ProfilePage.jsx'
-import ProductManagement from './pages/admin/ProductManagement.jsx'
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AboutPage from "./pages/AboutPage.jsx";
+import IndexPage from "./pages/IndexPage.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
+import ProductDetailPage from "./pages/ProductDetailPage.jsx";
+import ProductsPage from "./pages/ProductsPage.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import ProductManagement from "./pages/admin/ProductManagement.jsx";
+import { AuthProvider } from './contexts/AuthContext';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <IndexPage/>
+    element: <IndexPage />,
   },
   {
     path: "sobre",
-    element: <AboutPage/>
+    element: <AboutPage />,
   },
   {
     path: "auth",
-    element: <AuthPage/>
+    element: <AuthPage />,
   },
   {
     path: "carrinho",
-    element: <CartPage/>
+    element: <CartPage />,
   },
   {
     path: "contato",
-    element: <ContactPage/>
+    element: <ContactPage />,
   },
   {
     path: "produto/:id",
-    element: <ProductDetailPage/>
+    element: <ProductDetailPage />,
   },
   {
     path: "produtos",
-    element: <ProductsPage/>
+    element: <ProductsPage />,
   },
   {
     path: "admin",
-    element: <Dashboard/>
+    element: <Dashboard />,
   },
   {
     path: "perfil",
-    element: <ProfilePage/>
+    element: <ProfilePage />,
   },
   {
     path: "contato",
-    element: <ContactPage/>
+    element: <ContactPage />,
   },
   {
     path: "dashboard/produtos",
-    element: <ProductManagement/>
-  }
-])
+    element: <ProductManagement />,
+  },
+]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router}/>
+    <AuthProvider>
+      <RouterProvider router={router}/>
+    </AuthProvider>
   </StrictMode>
-)
+);
