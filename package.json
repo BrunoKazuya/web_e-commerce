@@ -10,11 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
+    "@radix-ui/react-tabs": "^1.1.12",
+    "@radix-ui/themes": "^3.2.1",
+=======
     "@radix-ui/react-checkbox": "^1.3.2",
     "@radix-ui/react-form": "^0.1.7",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slider": "^1.3.5",
     "@radix-ui/react-tabs": "^1.1.12",
+>>>>>>> a25461922cd854a22809f1f9ec3c2814e386c892
     "@tailwindcss/vite": "^4.1.7",
     "lucide-react": "^0.510.0",
     "react": "^18.3.1",

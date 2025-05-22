@@ -6,6 +6,7 @@ import "swiper/css/navigation";
 import BannerIndex from "../components/index/BannerIndex.jsx";
 import CategorySection from "../components/category/CategorySection.jsx";
 import { Link } from "react-router-dom";
+import Footer from "../components/Footer.jsx";
 const IndexPage = () => {
   return (
     <>
@@ -93,6 +94,7 @@ const IndexPage = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };
