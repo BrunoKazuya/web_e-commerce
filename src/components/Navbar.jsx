@@ -21,8 +21,8 @@ const Navbar = () => {
               <a href="/sobre" className="hover:text-blue-600">
                 Sobre
               </a>
-              <a href="/contatos" className="hover:text-blue-600">
-                Contatos
+              <a href="/contato" className="hover:text-blue-600">
+                Contato
               </a>
             </div>
             <div className="flex space-x-1">

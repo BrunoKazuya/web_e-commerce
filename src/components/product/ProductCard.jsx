@@ -19,7 +19,7 @@ const ProductCard = () => {
                     href="/produto"
                     className="bg-white rounded-xl py-2.5 px-5 text-sm border border-gray-300 hover:bg-gray-100"
                   >
-                    Ver Detalhes
+                    Detalhes
                   </a>
                   <a
                     href="/carrinho"
