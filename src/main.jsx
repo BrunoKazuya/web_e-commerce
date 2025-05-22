@@ -11,6 +11,7 @@ import ProductDetailPage from './pages/ProductDetailPage.jsx'
 import ProductsPage from './pages/ProductsPage.jsx'
 import Dashboard from './pages/admin/Dashboard.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import ProductManagement from './pages/admin/ProductManagement.jsx'
 
 const router = createBrowserRouter([
   {
@@ -48,8 +49,15 @@ const router = createBrowserRouter([
   {
     path: "perfil",
     element: <ProfilePage/>
+  },
+  {
+    path: "contato",
+    element: <ContactPage/>
+  },
+  {
+    path: "dashboard/produtos",
+    element: <ProductManagement/>
   }
-
 ])
 
 createRoot(document.getElementById('root')).render(
