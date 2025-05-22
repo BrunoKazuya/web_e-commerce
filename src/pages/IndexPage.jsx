@@ -32,7 +32,7 @@ const IndexPage = () => {
             }}
           >
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard/>
             </SwiperSlide>
             <SwiperSlide>
               <ProductCard />
