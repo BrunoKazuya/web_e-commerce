@@ -133,7 +133,7 @@ const ProfilePage = () => {
                       </label>
                       <input className='border rounded-lg' type="password" />
                     </div>
-                    <button type="submit">Atualizar Senha</button>
+                    <button className='button' type="submit">Atualizar Senha</button>
                   </form>
                 </div>
               </Tabs.Content>

@@ -9,12 +9,12 @@ import ProductCard from "../components/product/ProductCard";
 function ProductGrid() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <ProductCard/>
-      <ProductCard/>
-      <ProductCard/>
-      <ProductCard/>
-      <ProductCard/>
-      <ProductCard/>
+      <ProductCard id={1}/>
+      <ProductCard id={2}/>
+      <ProductCard id={3}/>
+      <ProductCard id={4}/>
+      <ProductCard id={5}/>
+      <ProductCard id={6}/>
     </div>
   )
 }

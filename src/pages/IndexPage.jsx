@@ -32,22 +32,22 @@ const IndexPage = () => {
             }}
           >
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={1}/>
             </SwiperSlide>
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={2}/>
             </SwiperSlide>
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={3}/>
             </SwiperSlide>
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={4}/>
             </SwiperSlide>
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={5}/>
             </SwiperSlide>
             <SwiperSlide>
-              <ProductCard />
+              <ProductCard id={6}/>
             </SwiperSlide>
           </Swiper>
         </div>

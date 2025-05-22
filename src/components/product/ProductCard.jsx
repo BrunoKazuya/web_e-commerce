@@ -1,18 +1,23 @@
 import { ShoppingCart } from "lucide-react";
+import { getProductById } from "../../data/products";
 
-const ProductCard = () => {
+const ProductCard = ({id}) => {
+    const info = getProductById(id);
+    if (!info||!info.image) return null;
+
+    
     return (
         <div className="rounded-3xl border border-gray-200 bg-white">
                 <div className="rounded-t-3xl overflow-hidden h-[190px]">
                   <img
-                    src="/img/produto1.avif"
+                    src={info.image}
                     alt="Premium Wireless Headphones"
                     className="object-cover object-center h-full w-full"
                   />
                 </div>
                 <div className="p-2.5 space-y-2.5">
-                  <h3 className="text-lg">Premium Wireless Headphones</h3>
-                  <p className="text-lg font-bold">R$459,99</p>
+                  <h3 className="text-lg">{info.name}</h3>
+                  <p className="text-lg font-bold">{info.price}</p>
                 </div>
                 <div className="flex justify-evenly items-center py-5 px-2.5">
                   <a
