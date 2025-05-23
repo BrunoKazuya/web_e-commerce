@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import { ShoppingCart, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProductCart from "../components/product/ProductCart";
-
+import Footer from "../components/Footer";
 const CartPage = () => {
   const fakeProduct = {
     name: "Camiseta Azul Radix",
@@ -89,7 +89,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

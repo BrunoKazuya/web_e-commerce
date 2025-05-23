@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-
+import Footer from "../components/Footer";
 const AboutPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
@@ -36,7 +36,7 @@ const AboutPage = () => {
         </div>
       </main>
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

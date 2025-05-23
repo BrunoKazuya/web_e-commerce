@@ -1,7 +1,10 @@
 import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useState } from "react";
-
+import { AuthContext } from "../contexts/AuthContext";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 const Navbar = () => {
+  const { logged, setLogged } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -26,21 +29,31 @@ const Navbar = () => {
               </a>
             </div>
             <div className="flex space-x-1">
-              <div className="p-2 hover:bg-blue-100 rounded-lg cursor-pointer">
+              <div className="p-2 hover:bg-blue-100 rounded-lg cursor-pointer flex items-center">
                 <Search className="h-5 w-5" />
               </div>
-              <a
-                href="/carrinho"
-                className="relative p-2 hover:bg-blue-100 rounded-lg"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-2 -right-2 bg-blue-700 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  3
-                </span>
-              </a>
-              <a href="/perfil" className="p-2 hover:bg-blue-100 rounded-lg">
-                <User className="h-5 w-5" />
-              </a>
+              {logged && (
+                <a
+                  href="/carrinho"
+                  className="relative p-2 hover:bg-blue-100 rounded-lg"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="absolute -top-2 -right-2 bg-blue-700 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    3
+                  </span>
+                </a>
+              )}
+              {!logged && (
+                <Link to={"/auth"} className="py-2 px-4 border border-gray-200 cursor-pointer hover:bg-gray-100 rounded-lg">
+                  Entrar
+                </Link>
+              )}
+              {logged && (
+                <a href="/perfil" className="p-2 hover:bg-blue-100 rounded-lg">
+                  <User className="h-5 w-5" />
+                </a>
+              )}
+
               <div
                 onClick={() => setIsOpen(!isOpen)}
                 className="sm:hidden p-2 hover:bg-blue-100 rounded-lg"

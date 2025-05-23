@@ -1,13 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Label from "@radix-ui/react-label";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import Footer from "../components/Footer";
+import { AuthContext } from "../contexts/AuthContext";
 
 const AuthPage = () => {
-  
-  const [isLogin, setIsLogin] = useState(true);
-
+  const [isLogin, setIsLogin] = useState(true)
+  const {logged, setLogged} = useContext(AuthContext)
+  const navigate = useNavigate()
+  const handleLoginSubmit = (e) => {
+    e.preventDefault()
+    setLogged(true)
+    navigate("/")
+  }
   return (
     <>
       <Navbar />
@@ -17,19 +24,27 @@ const AuthPage = () => {
             <Tabs.List className="grid grid-cols-2 mb-8 w-full bg-gray-100 rounded-lg p-1">
               <Tabs.Trigger
                 value="login"
-                className={`py-2 text-center cursor-pointer ${isLogin ? "bg-white text-black" : "text-gray-400"} rounded-lg`}
-                onClick={() => {if (!isLogin) {
-                    setIsLogin(!isLogin)
-                }}}
+                className={`py-2 text-center cursor-pointer ${
+                  isLogin ? "bg-white text-black" : "text-gray-400"
+                } rounded-lg`}
+                onClick={() => {
+                  if (!isLogin) {
+                    setIsLogin(!isLogin);
+                  }
+                }}
               >
                 Entrar
               </Tabs.Trigger>
               <Tabs.Trigger
                 value="register"
-                className={`py-2 text-center cursor-pointer ${!isLogin ? "bg-white text-black" : "text-gray-400"} rounded-lg`}
-                onClick={() => {if (isLogin) {
-                    setIsLogin(!isLogin)
-                }}}
+                className={`py-2 text-center cursor-pointer ${
+                  !isLogin ? "bg-white text-black" : "text-gray-400"
+                } rounded-lg`}
+                onClick={() => {
+                  if (isLogin) {
+                    setIsLogin(!isLogin);
+                  }
+                }}
               >
                 Cadastrar
               </Tabs.Trigger>
@@ -40,7 +55,7 @@ const AuthPage = () => {
               <h2 className="text-2xl font-bold mb-6 text-center">
                 Bem-vindo de volta
               </h2>
-              <form className="space-y-6">
+              <form onSubmit={handleLoginSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label.Root
                     htmlFor="email"
@@ -53,7 +68,7 @@ const AuthPage = () => {
                     type="email"
                     placeholder="seu@email.com"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                   />
                 </div>
 
@@ -77,7 +92,7 @@ const AuthPage = () => {
                     type="password"
                     placeholder="••••••••"
                     required
-                    className="w-full px-3 py-2 border-gray-300 border rounded-lg"
+                    className="w-full px-3 py-2 border-gray-300 border rounded-lg focus:outline-none focus:border-gray-400"
                   />
                 </div>
 
@@ -108,7 +123,7 @@ const AuthPage = () => {
                       id="firstName"
                       placeholder="João"
                       required
-                      className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                      className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
                     />
                   </div>
                   <div className="space-y-2">
@@ -122,7 +137,7 @@ const AuthPage = () => {
                       id="lastName"
                       placeholder="Silva"
                       required
-                      className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                      className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
                     />
                   </div>
                 </div>
@@ -139,7 +154,7 @@ const AuthPage = () => {
                     type="email"
                     placeholder="seu@email.com"
                     required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
                   />
                 </div>
 
@@ -155,7 +170,7 @@ const AuthPage = () => {
                     type="password"
                     placeholder="••••••••"
                     required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
                   />
                 </div>
 
@@ -171,7 +186,7 @@ const AuthPage = () => {
                     type="password"
                     placeholder="••••••••"
                     required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400"
                   />
                 </div>
 
@@ -186,7 +201,7 @@ const AuthPage = () => {
           </Tabs.Root>
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };
