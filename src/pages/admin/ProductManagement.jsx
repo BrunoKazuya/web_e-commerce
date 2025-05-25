@@ -1,100 +1,13 @@
 import React from 'react'
 import { Plus, Search, Edit, Trash2 } from 'lucide-react'
-
-function ProductForm({ editMode, onSave }) {
-  const [name, setName] = React.useState('')
-  const [category, setCategory] = React.useState('')
-  const [price, setPrice] = React.useState('')
-  const [inStock, setInStock] = React.useState(false)
-  const [featured, setFeatured] = React.useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Lógica fictícia de salvar
-    alert(`${editMode ? 'Editado' : 'Adicionado'}: ${name}`)
-    onSave()
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">Nome</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-200 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Categoria</label>
-        <input
-          type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-200 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Preço</label>
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-200 rounded-md"
-        />
-      </div>
-      <div className="flex items-center space-x-4">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            checked={inStock}
-            onChange={(e) => setInStock(e.target.checked)}
-            className="border border-gray-200 rounded cursor-pointer hover:bg-blue-800"
-          />
-          <span className="ml-2 text-sm">Em Estoque</span>
-        </label>
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            checked={featured}
-            onChange={(e) => setFeatured(e.target.checked)}
-            className="border border-gray-200 rounded cursor-pointer hover:bg-blue-800"
-          />
-          <span className="ml-2 text-sm">Destacado</span>
-        </label>
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-800"
-      >
-        {editMode ? 'Salvar Alterações' : 'Adicionar Produto'}
-      </button>
-    </form>
-  )
-}
-
-
+import { Link } from 'react-router-dom';
+import { useProduct } from '../../contexts/ProductContext';
 const ProductManagement = () => {
-
-  const initialProducts = React.useMemo(
-    () =>
-      Array.from({ length: 10 }, (_, i) => ({
-        id: String(i + 1),
-        name: `Produto ${i + 1}`,
-        image: '/img/produto1.avif',
-        category: ['Esporte', 'Casual', 'Formal'][i % 3],
-        price: 29.9 + i * 5,
-        inStock: i % 2 === 0,
-        featured: i % 4 === 0,
-      })),
-    []
-  )
+  const {getProducts} = useProduct()
+  const initialProducts = getProducts()
   const [products, setProducts] = React.useState(initialProducts)
   const [searchTerm, setSearchTerm] = React.useState('')
   const [selectedCategory, setSelectedCategory] = React.useState(null)
-  const [isAddingProduct, setIsAddingProduct] = React.useState(false)
-  const [editingProductId, setEditingProductId] = React.useState(null)
  
   // Filtro
   const filteredProducts = products.filter((p) => {
@@ -110,13 +23,12 @@ const ProductManagement = () => {
           <p className="text-gray-600">Gerencie seu inventário de produtos</p>
         </div>
         <div className="mt-4 md:mt-0">
-          <button
-            onClick={() => setIsAddingProduct(true)}
+          <Link to={"/dashboard/produtos/novo"}
             className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-800 flex items-center"
           >
             <Plus className="mr-2 h-4 w-4" />
             Adicionar Novo Produto
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -158,34 +70,6 @@ const ProductManagement = () => {
           </div>
         </div>
       </div>
-
-      {/* Formulário Add/Edit */}
-      {(isAddingProduct || editingProductId) && (
-        <div className="mb-8 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">
-              {editingProductId ? 'Editar Produto' : 'Adicionar Novo Produto'}
-            </h2>
-            <button
-              onClick={() => {
-                setIsAddingProduct(false)
-                setEditingProductId(null)
-              }}
-              className="px-4 py-2 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-          </div>
-          <ProductForm
-            editMode={Boolean(editingProductId)}
-            productId={editingProductId || undefined}
-            onSave={() => {
-              setIsAddingProduct(false)
-              setEditingProductId(null)
-            }}
-          />
-        </div>
-      )}
 
       {/* Tabela de Produtos */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
@@ -250,7 +134,6 @@ const ProductManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
-                      onClick={() => setEditingProductId(product.id)}
                       className="text-blue-600 cursor-pointer hover:bg-blue-100 p-2 rounded"
                     >
                       <Edit className="h-4 w-4" />

@@ -1,7 +1,7 @@
 import { ShoppingCart } from "lucide-react";
-import { getProductById } from "../../data/products";
-
+import { useProduct } from "../../contexts/ProductContext";
 const ProductCard = ({id}) => {
+  const {getProductById} = useProduct()
     const info = getProductById(id);
     if (!info||!info.image) return null;
 

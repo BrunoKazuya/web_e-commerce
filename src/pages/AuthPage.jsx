@@ -1,20 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
 import * as Tabs from "@radix-ui/react-tabs";
-import * as Label from "@radix-ui/react-label";
-import Navbar from "../components/Navbar";
-import { useContext, useState } from "react";
-import Footer from "../components/Footer";
-import { AuthContext } from "../contexts/AuthContext";
 
+import Navbar from "../components/Navbar";
+import { useState } from "react";
+import Footer from "../components/Footer";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true)
-  const {logged, setLogged} = useContext(AuthContext)
-  const navigate = useNavigate()
-  const handleLoginSubmit = (e) => {
-    e.preventDefault()
-    setLogged(true)
-    navigate("/")
-  }
+  const [isLogin, setIsLogin] = useState(true);
   return (
     <>
       <Navbar />
@@ -52,151 +44,12 @@ const AuthPage = () => {
 
             {/* LOGIN */}
             <Tabs.Content value="login" className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-center">
-                Bem-vindo de volta
-              </h2>
-              <form onSubmit={handleLoginSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label.Root
-                    htmlFor="email"
-                    className="block text-sm font-medium"
-                  >
-                    E-mail
-                  </Label.Root>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label.Root
-                      htmlFor="password"
-                      className="block text-sm font-medium"
-                    >
-                      Senha
-                    </Label.Root>
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      Esqueceu a senha?
-                    </Link>
-                  </div>
-                  <input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    className="w-full px-3 py-2 border-gray-300 border rounded-lg focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-800 cursor-pointer"
-                >
-                  Entrar
-                </button>
-              </form>
+              <LoginForm/>
             </Tabs.Content>
 
             {/* REGISTER */}
             <Tabs.Content value="register" className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-center">
-                Criar uma conta
-              </h2>
-              <form className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label.Root
-                      htmlFor="firstName"
-                      className="block text-sm font-medium"
-                    >
-                      Nome
-                    </Label.Root>
-                    <input
-                      id="firstName"
-                      placeholder="João"
-                      required
-                      className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label.Root
-                      htmlFor="lastName"
-                      className="block text-sm font-medium"
-                    >
-                      Sobrenome
-                    </Label.Root>
-                    <input
-                      id="lastName"
-                      placeholder="Silva"
-                      required
-                      className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label.Root
-                    htmlFor="registerEmail"
-                    className="block text-sm font-medium"
-                  >
-                    E-mail
-                  </Label.Root>
-                  <input
-                    id="registerEmail"
-                    type="email"
-                    placeholder="seu@email.com"
-                    required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label.Root
-                    htmlFor="registerPassword"
-                    className="block text-sm font-medium"
-                  >
-                    Senha
-                  </Label.Root>
-                  <input
-                    id="registerPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label.Root
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium"
-                  >
-                    Confirmar Senha
-                  </Label.Root>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-800 cursor-pointer"
-                >
-                  Cadastrar
-                </button>
-              </form>
+              <RegisterForm/>
             </Tabs.Content>
           </Tabs.Root>
         </div>

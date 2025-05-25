@@ -12,7 +12,11 @@ import ProductsPage from "./pages/ProductsPage.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProductManagement from "./pages/admin/ProductManagement.jsx";
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from "./contexts/AuthContext";
+import { UserProvider } from "./contexts/UserContext.jsx";
+import { ProductProvider } from "./contexts/ProductContext.jsx";
+import PrivateRoute from "./contexts/PrivateRoute.jsx";
+import ProductNew from "./pages/admin/ProductNew.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,7 +32,11 @@ const router = createBrowserRouter([
   },
   {
     path: "carrinho",
-    element: <CartPage />,
+    element: (
+      <PrivateRoute>
+        <CartPage />
+      </PrivateRoute>
+    ),
   },
   {
     path: "contato",
@@ -43,12 +51,20 @@ const router = createBrowserRouter([
     element: <ProductsPage />,
   },
   {
-    path: "admin",
-    element: <Dashboard />,
+    path: "dashboard",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <Dashboard />
+      </PrivateRoute>
+    ),
   },
   {
     path: "perfil",
-    element: <ProfilePage />,
+    element: (
+      <PrivateRoute>
+        <ProfilePage />
+      </PrivateRoute>
+    ),
   },
   {
     path: "contato",
@@ -56,14 +72,30 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard/produtos",
-    element: <ProductManagement />,
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <ProductManagement />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "dashboard/produtos/novo",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <ProductNew />
+      </PrivateRoute>
+    ),
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router}/>
-    </AuthProvider>
+    <UserProvider>
+      <AuthProvider>
+        <ProductProvider>
+          <RouterProvider router={router} />
+        </ProductProvider>
+      </AuthProvider>
+    </UserProvider>
   </StrictMode>
 );

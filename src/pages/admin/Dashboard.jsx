@@ -5,7 +5,6 @@ import {
   Users,
   CreditCard,
   Package,
-  TrendingUp,
   BarChart3,
   ArrowRight
 } from 'lucide-react';
@@ -34,8 +33,8 @@ const Dashboard = () => {
           <p className="text-gray-600">Bem-vindo de volta, Admin</p>
         </div>
         <div className="mt-4 md:mt-0">
-          <Link to="/admin/products/new">
-            <button className="bg-blue-600 text-white rounded-lg px-4 py-2">
+          <Link to="/dashboard/produtos/novo">
+            <button className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-800 cursor-pointer">
               Adicionar Novo Produto
             </button>
           </Link>
@@ -43,7 +42,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div className="flex flex-row items-center justify-between pb-2">
             <Text as="div" size="2" weight="medium">Receita Total</Text>
             <CreditCard className="h-4 w-4" />
@@ -54,7 +53,7 @@ const Dashboard = () => {
           </Box>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div className="flex flex-row items-center justify-between pb-2">
             <Text as="div" size="2" weight="medium">Total de Pedidos</Text>
             <ShoppingBag className="h-4 w-4" />
@@ -65,7 +64,7 @@ const Dashboard = () => {
           </Box>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div className="flex flex-row items-center justify-between pb-2">
             <Text as="div" size="2" weight="medium">Produtos</Text>
             <Package className="h-4 w-4" />
@@ -76,7 +75,7 @@ const Dashboard = () => {
           </Box>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div className="flex flex-row items-center justify-between pb-2">
             <Text as="div" size="2" weight="medium">Usuários Ativos</Text>
             <Users className="h-4 w-4" />
@@ -89,7 +88,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div>
             <Text size="3" weight="medium">Visão Geral de Vendas</Text>
             <p className="text-sm text-gray-500">Comparação de vendas do mês atual e anterior</p>
@@ -102,7 +101,7 @@ const Dashboard = () => {
           </Box>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <div className="flex flex-row items-center justify-between">
             <div>
               <Text size="3" weight="medium">Pedidos Recentes</Text>
@@ -135,60 +134,43 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <Text size="3" weight="medium" className="flex items-center">
             <Package className="mr-2 h-5 w-5" /> Gestão de Produtos
           </Text>
           <Box className="space-y-2">
             <Link to="/admin/products">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
+              <button className="border border-gray-200 text-gray-800 rounded-lg w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100 my-4">
                 Ver Todos os Produtos
               </button>
             </Link>
-            <Link to="/admin/products/new">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
+            <Link to="/dashboard/produtos/novo">
+              <button className="border border-gray-200 text-gray-800 rounded-lg w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100">
                 Adicionar Novo Produto
               </button>
             </Link>
           </Box>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 p-5 rounded-lg">
           <Text size="3" weight="medium" className="flex items-center">
             <Users className="mr-2 h-5 w-5" /> Gestão de Usuários
           </Text>
           <Box className="space-y-2">
             <Link to="/admin/users">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
+              <button className="border border-gray-200 text-gray-800 rounded-lg w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100 my-4">
                 Ver Todos os Usuários
               </button>
             </Link>
             <Link to="/admin/users/new">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
+              <button className="border border-gray-200 text-gray-800 rounded-lg w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100">
                 Adicionar Novo Usuário
               </button>
             </Link>
           </Box>
         </Card>
 
-        <Card>
-          <Text size="3" weight="medium" className="flex items-center">
-            <TrendingUp className="mr-2 h-5 w-5" /> Relatórios
-          </Text>
-          <Box className="space-y-2">
-            <Link to="/admin/reports/sales">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
-                Relatório de Vendas
-              </button>
-            </Link>
-            <Link to="/admin/reports/inventory">
-              <button className="bg-blue-600 text-white rounded-lg w-full text-left px-4 py-2">
-                Relatório de Estoque
-              </button>
-            </Link>
-          </Box>
-        </Card>
       </div>
     </div>
   );
