@@ -6,6 +6,7 @@ const RegisterForm = () => {
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
@@ -20,21 +21,25 @@ const RegisterForm = () => {
           password: password,
           role: "user",
           name: name,
+          phone: phone,
+          cart: [],
+          order: [],
+          address: []
         };
         addUser(user);
       } else {
-        setErrorMessage("As senhas não são iguais")
-        setError(true)
+        setErrorMessage("As senhas não são iguais");
+        setError(true);
       }
-    } else{
-        setErrorMessage("Existe uma conta com esse email")
-        setError(true)
+    } else {
+      setErrorMessage("Existe uma conta com esse email");
+      setError(true);
     }
   };
   return (
     <>
       <h2 className="text-2xl font-bold mb-6 text-center">Criar uma conta</h2>
-     {error && (
+      {error && (
         <div className="bg-red-200 w-full text-red-500 py-2 rounded-lg text-center">
           {errorMessage}
         </div>
@@ -69,7 +74,22 @@ const RegisterForm = () => {
             className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
           />
         </div>
-
+        <div className="space-y-2">
+          <Label.Root
+            htmlFor="registerPhone"
+            className="block text-sm font-medium"
+          >
+            Telefone
+          </Label.Root>
+          <input
+            id="registerPhone"
+            type="text"
+            placeholder="(xx)xxxxx-xxxx"
+            required
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
+          />
+        </div>
         <div className="space-y-2">
           <Label.Root
             htmlFor="registerPassword"

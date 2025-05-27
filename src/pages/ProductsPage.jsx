@@ -1,35 +1,34 @@
 // ProductsPage.jsx
 import Navbar from "../components/Navbar";
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import ProductCard from "../components/product/ProductCard";
 import Filter from "../components/filter/Filter";
-import { getProductById } from "../data/products";
 
+import { useProduct } from "../contexts/ProductContext";
 function ProductGrid({ filtrados }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {filtrados.map((id) => (
-        <ProductCard key={id} id={id} />
-      ))}
+      {filtrados.map((product) => {
+        return <ProductCard key={product.id} id={product.id}/>
+      })}
     </div>
   );
 }
 
 export default function ProductsPage() {
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState(1000);
+  const {getProducts} = useProduct()
+
+  const [category, setCategory] = useState(""); 
+  const [priceRange, setPriceRange] = useState([0, 1000])
   const [search, setSearch] = useState("");
-  const array_id = [1, 2, 3, 4, 5, 6];
+  const products = getProducts(true);
 
   // somente recalcula quando `category` mudar
   const filtrados = useMemo(() =>{
-    return array_id.filter((id) => {
-      let product = getProductById(id);      
-      if (!product) return false;
-
-      return(((product.category === category || category === "") && product.price<=price) && (product.name.toLowerCase().includes(search)))
+    return products.filter((product) => {
+      return(((product.category === category || category === "") && (product.price >= priceRange[0] && product.price<=priceRange[1])) && (product.name.toLowerCase().includes(search.toLowerCase())))
     })
-    },[category, price, search, array_id]);
+    },[category, priceRange, search]);
 
   return (
     <>
@@ -41,8 +40,8 @@ export default function ProductsPage() {
             <Filter
               selectedCategory={category}
               onCategoryChange={setCategory}
-              selectedPrice={price}
-              onPriceChange={setPrice}
+              selectedPrice={priceRange}
+              onPriceChange={setPriceRange}
               selectedSearch={search}
               onSearchChange={setSearch}
             />

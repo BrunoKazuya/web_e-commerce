@@ -17,6 +17,10 @@ import { UserProvider } from "./contexts/UserContext.jsx";
 import { ProductProvider } from "./contexts/ProductContext.jsx";
 import PrivateRoute from "./contexts/PrivateRoute.jsx";
 import ProductNew from "./pages/admin/ProductNew.jsx";
+import ProductUpdate from "./pages/admin/ProductUpdate.jsx";
+import UserManagement from "./pages/admin/UserManagement.jsx";
+import UserNew from "./pages/admin/UserNew.jsx";
+import UserUpdate from "./pages/admin/UserUpdate.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -83,6 +87,38 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute requiredRole={"admin"}>
         <ProductNew />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "dashboard/produtos/editar/:id",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <ProductUpdate />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "dashboard/usuarios",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <UserManagement />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "dashboard/usuarios/novo",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <UserNew />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "dashboard/usuarios/editar/:id",
+    element: (
+      <PrivateRoute requiredRole={"admin"}>
+        <UserUpdate />
       </PrivateRoute>
     ),
   },

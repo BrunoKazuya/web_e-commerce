@@ -17,6 +17,7 @@ const LoginForm = () => {
       navigate("/");
     } else {
       setErrorLogin(true);
+      setPasswordLogin("")
     }
   };
   return (
@@ -64,6 +65,7 @@ const LoginForm = () => {
             type="password"
             placeholder="••••••••"
             required
+            value={passwordLogin}
             onChange={(e) => setPasswordLogin(e.target.value)}
             className="w-full px-3 py-2 border-gray-300 border rounded-lg focus:outline-none focus:border-gray-400"
           />

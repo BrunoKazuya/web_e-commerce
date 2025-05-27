@@ -1,44 +1,96 @@
 import Navbar from "../components/Navbar";
 import { ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProductCard from "../components/product/ProductCard.jsx";
 import "swiper/css";
 import "swiper/css/navigation";
+import { useEffect, useState } from "react";
+import { useProduct } from "../contexts/ProductContext.jsx";
+import { useUser } from "../contexts/UserContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { Minus, Plus } from "lucide-react";
+import Loading from "../components/ui/Loading.jsx";
 
 const ProductDetailPage = () => {
-  const product = {
-    id: "1",
-    name: "Tênis de Corrida Azul",
-    image: "/img/produto1.avif",
-    rating: 4.2,
-    price: 199.9,
-    description:
-      "Tênis confortável e leve, ideal para treinos de longa distância.",
-    inStock: true,
-    category: "esporte",
+  const navigate = useNavigate();
+  const { addCart } = useUser();
+  const [product, setProduct] = useState({});
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const { getProductById, getRelatedProducts } = useProduct();
+  const { id } = useParams();
+
+
+  useEffect(() => {
+    if (!id) return;
+
+    async function load() {
+      try {
+        const fetched = await getProductById(id);
+        setProduct(fetched);
+        const related = await getRelatedProducts(fetched.category, id);
+        setRelatedProducts(related);
+      } catch (err) {
+        console.error("Erro ao buscar produto ou relacionados", err);
+      } finally{
+        setLoading(false)
+      }
+    }
+
+    load();
+  }, [id, getProductById, getRelatedProducts]);
+const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    if (product && product.inStock === 0) {
+      setQuantity(0);
+    } else if (product && product.inStock > 0) {
+      setQuantity(1);
+    }
+  }, [product?.inStock]);
+
+ 
+
+  
+
+  const minusQuantity = () => {
+    if (quantity > 0) {
+      setQuantity(quantity - 1);
+    }
   };
+  const plusQuantity = () => {
+    if (quantity < product.inStock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const cart = () => {
+    if (product.inStock > 0) {
+      addCart(product, quantity);
+      navigate("/carrinho");
+    }
+  };
+
+   if(!product){
+    return <div>O produto nao existe</div>
+  }
+
+  if(loading){
+    return <Loading size="lg"/>
+  }
 
   return (
     <>
       <Navbar />
       <main className="py-12">
         <div className="max-w-7xl mx-auto px-6 sm:px-4 lg:px-2">
-          <div className="mb-6">
-            <Link
-              to="/products"
-              className="text-blue-600 hover:underline flex items-center cursor-pointer"
-            >
-              &larr; Back to Products
-            </Link>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             {/* Product Images */}
             <div className="rounded-lg shadow-md">
               <img
-                src={`${product.image}?w=600&h=600&fit=crop&q=80`}
-                alt={product.name}
+                src={`${product.image ?? ""}?w=600&h=600&fit=crop&q=80`}
+                alt={product.name ?? ""}
                 className="w-full h-auto rounded-md"
               />
             </div>
@@ -52,7 +104,7 @@ const ProductDetailPage = () => {
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
                     className={`h-5 w-5 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor((product.rating ?? 0).toFixed(1))
                         ? "fill-current"
                         : "stroke-current fill-none"
                     }`}
@@ -67,48 +119,65 @@ const ProductDetailPage = () => {
                   </svg>
                 ))}
                 <span className="ml-2 text-gray-600">
-                  ({product.rating.toFixed(1)})
+                  ({(product.rating ?? 0).toFixed(1)})
                 </span>
               </div>
               <p className="text-3xl font-bold text-blue-600 mb-4">
-                ${product.price.toFixed(2)}
+                R$ {(product.price ?? 0).toFixed(2)}
               </p>
-              <p className="text-gray-700 mb-6">{product.description}</p>
+              <p className="text-gray-700 mb-6">{product.description ?? ""}</p>
 
               <div className="flex items-center mb-6">
                 <div className="mr-4 flex items-center">
                   <span className="font-medium mr-2">Estoque:</span>
-                  10 disponiveis
+                  {product.inStock ?? 0} disponiveis
                 </div>
                 <div className="flex items-center">
                   <span className="font-medium mr-2">Categoria:</span>
                   <Link
-                    to={`/products?category=${product.category}`}
+                    to={`/produtos?category=${product.category ?? ""}`}
                     className="text-blue-600 hover:underline cursor-pointer"
                   >
-                    {product.category.charAt(0).toUpperCase() +
-                      product.category.slice(1)}
+                    {(product.category ?? "").charAt(0).toUpperCase() +
+                      (product.category ?? "").slice(1)}
                   </Link>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex items-center border border-gray-200 rounded-md">
+                <div className="flex items-center border border-gray-200 rounded-lg">
                   <button
-                    className="h-10 w-10 rounded-none flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className={`h-10 w-10 rounded-none flex items-center justify-center hover:bg-gray-200 ${
+                      quantity === 0
+                        ? "bg-gray-200 cursor-not-allowed text-gray-400"
+                        : "cursor-pointer"
+                    }`}
                     aria-label="Diminuir quantidade"
+                    onClick={() => minusQuantity()}
                   >
-                    -
+                    <Minus className="h-3 w-3" />
                   </button>
-                  <span className="px-6">1</span>
+                  <span className="px-6">{quantity}</span>
                   <button
-                    className="h-10 w-10 rounded-none flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className={`h-10 w-10 rounded-r-lg flex items-center justify-center hover:bg-gray-200  ${
+                      quantity === product.inStock
+                        ? "bg-gray-200 cursor-not-allowed text-gray-400"
+                        : "cursor-pointer"
+                    }`}
                     aria-label="Aumentar quantidade"
+                    onClick={() => plusQuantity()}
                   >
-                    +
+                    <Plus className="h-3 w-3" />
                   </button>
                 </div>
-                <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-800 flex items-center justify-center">
+                <button
+                  className={`flex-1  text-white px-4 py-2 rounded-lg  flex items-center justify-center ${
+                    product.inStock === 0
+                      ? "bg-blue-300 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-800 cursor-pointer"
+                  }`}
+                  onClick={() => cart()}
+                >
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   Adicionar ao carrinho
                 </button>
@@ -136,24 +205,13 @@ const ProductDetailPage = () => {
                   },
                 }}
               >
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <ProductCard />
-                </SwiperSlide>
+                {(relatedProducts ?? []).map((p) => {
+                  return (
+                    <SwiperSlide key={p.id}>
+                      <ProductCard id={p.id} />
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </div>
           </section>

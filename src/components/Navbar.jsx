@@ -2,8 +2,10 @@ import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useState, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 const Navbar = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, isAdmin } = useAuth();
+  const { cartQuantity } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const closeTimer = useRef(null);
@@ -47,9 +49,11 @@ const Navbar = () => {
                   className="relative p-2 hover:bg-blue-100 rounded-lg"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span className="absolute -top-2 -right-2 bg-blue-700 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
+                  {cartQuantity > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-blue-700 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartQuantity}
+                    </span>
+                  )}
                 </a>
               )}
               {!isLoggedIn && (
@@ -76,6 +80,17 @@ const Navbar = () => {
                       onMouseEnter={handleMouseEnter} // mantém aberto
                       onMouseLeave={handleMouseLeave} // fecha quando sair do menu
                     >
+                      {isAdmin && (
+                        <li>
+                          <Link
+                            to="/dashboard"
+                            className="block px-4 py-2 text-sm hover:bg-blue-100"
+                          >
+                            Dashboard
+                          </Link>
+                        </li>
+                      )}
+
                       <li>
                         <Link
                           to="/perfil"
@@ -87,7 +102,7 @@ const Navbar = () => {
                       <li>
                         <button
                           onClick={() => {
-                           logout()
+                            logout();
                           }}
                           className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer"
                         >

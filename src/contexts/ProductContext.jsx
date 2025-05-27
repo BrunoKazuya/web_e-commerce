@@ -122,22 +122,61 @@ export function ProductProvider({ children }) {
     localStorage.setItem("products", JSON.stringify(products));
   }
 
-  function getProducts(){
-     const stored = localStorage.getItem("products");
+  function updateProduct(product) {
+    const stored = localStorage.getItem("products");
 
     const products = stored ? JSON.parse(stored) : [];
-    return products
+    const newProducts = products.map((p) => {
+      if (p.id === product.id) return product;
+      return p;
+    });
+    localStorage.setItem("products", JSON.stringify(newProducts));
+  }
+
+  function removeProducts(id) {
+    const stored = localStorage.getItem("products");
+
+    const products = stored ? JSON.parse(stored) : [];
+    const newProducts = products.filter((p) => p.id !== id);
+    localStorage.setItem("products", JSON.stringify(newProducts));
+  }
+
+  function getProducts(inStock) {
+    const stored = localStorage.getItem("products");
+
+    const products = stored ? JSON.parse(stored) : [];
+    if (inStock) return products.filter((p) => p.inStock > 0);
+    return products;
   }
 
   function getProductById(id) {
     const stored = localStorage.getItem("products");
     const products = JSON.parse(stored);
 
-    return products.find((p) => p.id === id);
+    return products.find((p) => p.id === Number(id));
+  }
+
+  function getRelatedProducts(category, id) {
+    const stored = localStorage.getItem("products");
+    const products = JSON.parse(stored);
+    return products.filter(
+      (p) => p.category === category && p.id !== Number(id)
+    );
   }
 
   return (
-    <ProductContext.Provider value={{addProduct, getProductById, getProducts}}>{children}</ProductContext.Provider>
+    <ProductContext.Provider
+      value={{
+        addProduct,
+        getProductById,
+        getProducts,
+        getRelatedProducts,
+        updateProduct,
+        removeProducts,
+      }}
+    >
+      {children}
+    </ProductContext.Provider>
   );
 }
 

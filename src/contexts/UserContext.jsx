@@ -1,8 +1,11 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
+  const [cartQuantity, setCartQuantity] = useState(() => {
+    return getCart().length;
+  });
   useEffect(() => {
     const stored = localStorage.getItem("users");
 
@@ -14,6 +17,11 @@ export function UserProvider({ children }) {
         password: "admin",
         role: "admin",
         name: "ADM",
+        phone: "(11)987654321",
+        createdAt: Date.now(),
+        cart: [],
+        order: [],
+        address: [],
       };
 
       // 2. Cria um array contendo esse objeto
@@ -28,35 +36,287 @@ export function UserProvider({ children }) {
     const stored = localStorage.getItem("users");
 
     const users = stored ? JSON.parse(stored) : [];
-    user.id = users.length + 1
+    user.id = users.length + 1;
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
   }
 
-  function isEmailValid(email){
-    const stored = localStorage.getItem("users")
-    const users = JSON.parse(stored)
+  function updateUser(newUser, mine) {
+    
 
-    const user = users.find(u =>
-    u.email === email)
-    if(user){
-      return false
+    if(mine){
+      const user = getUser();
+      if (!(user.email === newUser.email) && !isEmailValid(newUser.email)) {
+      return false;
     }
-    return true
+    const updatedUser = { ...user, name: newUser.name, email: newUser.email, phone: newUser.phone };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    saveUsers(updatedUser)
+    } else{
+      const user = getUserById(newUser.id)
+      const updatedUser = {...user, role: newUser.role}
+      saveUsers(updatedUser)
+    }
+   
+    return true;
   }
 
-  function getUser(){
-    const stored = localStorage.getItem("user")
+  function saveUsers(user){
+     const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
 
-    return JSON.parse(stored)
+  function removeUser(id) {
+    const users = getUsers();
+    localStorage.setItem(
+      "users",
+      JSON.stringify(users.filter((u) => u.id !== id))
+    );
+  }
+
+function getUserById(id){
+  const users = getUsers()
+  return users.find(u => u.id === Number(id))
+
+}
+
+  function updatePasswordUser(newPassword) {
+    const user = getUser();
+    const updatedUser = { ...user, password: newPassword };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === updatedUser.id) {
+        return updatedUser;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
+
+  function verifyPassword(password) {
+    const user = getUser();
+    if (user.password === password) {
+      return true;
+    }
+    return false;
+  }
+
+  function isEmailValid(email) {
+    const stored = localStorage.getItem("users");
+    const users = JSON.parse(stored);
+
+    const user = users.find((u) => u.email === email);
+    if (user) {
+      return false;
+    }
+    return true;
+  }
+
+  function getUser() {
+    const stored = localStorage.getItem("user");
+
+    return JSON.parse(stored);
+  }
+
+  function getUsers() {
+    const stored = localStorage.getItem("users");
+
+    return JSON.parse(stored);
+  }
+
+  function addCart(product, quantity) {
+    const user = getUser();
+    const productCart = user.cart.find((p) => p.id === product.id);
+    if (productCart) {
+      if (productCart.quantity + quantity > productCart.inStock) {
+        productCart.quantity = productCart.inStock;
+      } else {
+        console.log(productCart.quantity);
+
+        productCart.quantity = productCart.quantity + quantity;
+      }
+      user.cart.map((p) => {
+        if (p.id === productCart.id) {
+          return productCart;
+        }
+        return p;
+      });
+    } else {
+      console.log("oi");
+      product = { ...product, quantity: quantity };
+      user.cart.push(product);
+    }
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        console.log(user);
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+    setCartQuantity(cartQuantity + 1);
+  }
+
+  function updateCart(product, quantity) {
+    const user = getUser();
+    const productCart = user.cart.find((p) => p.id === product.id);
+    if (productCart) {
+      productCart.quantity = quantity;
+    }
+    user.cart.map((p) => {
+      if (p.id === productCart.id) {
+        return productCart;
+      }
+      return p;
+    });
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        console.log(user);
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
+
+  function deleteCart(id) {
+    const user = getUser();
+    const productCart = user.cart.filter((p) => p.id !== id);
+    user.cart = productCart;
+    console.log(user);
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    users.map((u) => {
+      if (u.id === user.id) {
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(users));
+    setCartQuantity(cartQuantity - 1);
+  }
+
+  function getOrder() {
+    const user = getUser();
+    return user.order;
+  }
+
+  function addOrder(order) {
+    const user = getUser();
+    order.id = user.order.length + 1;
+    user.order.push(order);
+    user.cart = [];
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        console.log(user);
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
+
+  function getCart() {
+    const user = getUser();
+    if (!user) return [];
+    return user.cart;
+  }
+
+  function getAddress() {
+    const user = getUser();
+    return user.address;
+  }
+
+  function addAddress(address) {
+    const user = getUser();
+    address.id = user.address.length + 1;
+    user.address.push(address);
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
+
+  function updateAddress(address) {
+    const user = getUser();
+    const newAddress = user.address.map((a) => {
+      if (a.id === address.id) return address;
+      return a;
+    });
+    user.address = newAddress;
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
+  }
+
+  function removeAddress(id) {
+    const user = getUser();
+    const newAddress = user.address.filter((a) => a.id !== id);
+    user.address = newAddress;
+    localStorage.setItem("user", JSON.stringify(user));
+    const users = getUsers();
+    const updateUsers = users.map((u) => {
+      if (u.id === user.id) {
+        return user;
+      }
+      return u;
+    });
+    localStorage.setItem("users", JSON.stringify(updateUsers));
   }
 
   return (
-    <UserContext.Provider value={{ addUser, isEmailValid, getUser }}>{children}</UserContext.Provider>
+    <UserContext.Provider
+      value={{
+        addUser,
+        isEmailValid,
+        getUser,
+        addCart,
+        getCart,
+        updateCart,
+        deleteCart,
+        cartQuantity,
+        setCartQuantity,
+        getOrder,
+        addOrder,
+        updateUser,
+        updatePasswordUser,
+        verifyPassword,
+        getAddress,
+        addAddress,
+        updateAddress,
+        removeAddress,
+        getUsers,
+        removeUser,
+        getUserById,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
   );
-
-  
-
 }
 
 // 6. Hook para usar o AuthContext

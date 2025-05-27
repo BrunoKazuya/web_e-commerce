@@ -34,7 +34,6 @@ const IndexPage = () => {
           >
             <SwiperSlide>
               <ProductCard id={1}/>
-              <ProductCard/>
             </SwiperSlide>
             <SwiperSlide>
               <ProductCard id={2}/>
