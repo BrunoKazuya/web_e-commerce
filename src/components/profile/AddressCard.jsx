@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-import AddressForm from "./addressForm";
+import AddressForm from "./AddressForm";
 
 const AddressCard = ({ address, onRemoveAddress, onUpdateAddress }) => {
   const { removeAddress } = useUser();
