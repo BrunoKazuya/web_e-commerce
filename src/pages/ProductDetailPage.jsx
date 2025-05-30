@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer.jsx";
 import { ShoppingCart } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -52,8 +53,6 @@ const [quantity, setQuantity] = useState(0);
 
  
 
-  
-
   const minusQuantity = () => {
     if (quantity > 0) {
       setQuantity(quantity - 1);
@@ -73,7 +72,7 @@ const [quantity, setQuantity] = useState(0);
   };
 
    if(!product){
-    return <div>O produto nao existe</div>
+    navigate("/not-found")
   }
 
   if(loading){
@@ -89,7 +88,7 @@ const [quantity, setQuantity] = useState(0);
             {/* Product Images */}
             <div className="rounded-lg shadow-md">
               <img
-                src={`${product.image ?? ""}?w=600&h=600&fit=crop&q=80`}
+                src={`/img/products/${product.image ?? ""}?w=600&h=600&fit=crop&q=80`}
                 alt={product.name ?? ""}
                 className="w-full h-auto rounded-md"
               />
@@ -127,7 +126,7 @@ const [quantity, setQuantity] = useState(0);
               </p>
               <p className="text-gray-700 mb-6">{product.description ?? ""}</p>
 
-              <div className="flex items-center mb-6">
+              <div className="flex flex-col sm:flex-row items-center mb-6 space-y-4 sm:space-y-0">
                 <div className="mr-4 flex items-center">
                   <span className="font-medium mr-2">Estoque:</span>
                   {product.inStock ?? 0} disponiveis
@@ -144,10 +143,10 @@ const [quantity, setQuantity] = useState(0);
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 w">
                 <div className="flex items-center border border-gray-200 rounded-lg">
                   <button
-                    className={`h-10 w-10 rounded-none flex items-center justify-center hover:bg-gray-200 ${
+                    className={`h-10 w-full sm:w-10 rounded-none flex items-center justify-center hover:bg-gray-200 ${
                       quantity === 0
                         ? "bg-gray-200 cursor-not-allowed text-gray-400"
                         : "cursor-pointer"
@@ -159,7 +158,7 @@ const [quantity, setQuantity] = useState(0);
                   </button>
                   <span className="px-6">{quantity}</span>
                   <button
-                    className={`h-10 w-10 rounded-r-lg flex items-center justify-center hover:bg-gray-200  ${
+                    className={`h-10 w-full sm:w-10 rounded-r-lg flex items-center justify-center hover:bg-gray-200  ${
                       quantity === product.inStock
                         ? "bg-gray-200 cursor-not-allowed text-gray-400"
                         : "cursor-pointer"
@@ -217,7 +216,7 @@ const [quantity, setQuantity] = useState(0);
           </section>
         </div>
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

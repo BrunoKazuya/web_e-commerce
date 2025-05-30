@@ -3,8 +3,8 @@
 const Footer = () => {
     return ( 
 
-        <footer className="bg-gray-50 pt-12 pb-8  px-50">
-            <div className="container-custom">
+        <footer className="bg-gray-50 pt-12 pb-8">
+            <div className="max-w-7xl mx-auto px-6 sm:px-4 lg:px-2">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Buy things</h3>
@@ -15,19 +15,18 @@ const Footer = () => {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Compras</h3>
                         <ul>
-                            <li><a href="" className="text-gray-600 hover:text-primary">Todos os produtos</a></li>
-                            <li><a href="" className="text-gray-600 hover:text-primary">Categorias</a></li>
+                            <li><a href="/produtos" className="text-gray-600 hover:text-primary">Todos os produtos</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Atendimento</h3>
                         <ul>
-                            <li><a href="" className="text-gray-600 hover:text-primary">Contato</a></li>
+                            <li><a href="/contato" className="text-gray-600 hover:text-primary">Contato</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Sobre</h3>
-                            <a href="" className="text-gray-600 hover:text-primary">Nossa história</a>
+                            <a href="/sobre" className="text-gray-600 hover:text-primary">Nossa história</a>
                     </div>
                 </div>
 

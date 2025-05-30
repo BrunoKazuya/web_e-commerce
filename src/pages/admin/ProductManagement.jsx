@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProduct } from "../../contexts/ProductContext";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 import Loading from "../../components/ui/Loading";
+import ProductItem from "../../components/admin/ProductItem";
 const ProductManagement = () => {
   const { getProducts, removeProducts } = useProduct();
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState(null);
-  const[loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const filteredProducts = products.filter((p) => {
     if (searchTerm && !p.name.toLowerCase().includes(searchTerm.toLowerCase()))
       return false;
@@ -18,27 +20,26 @@ const ProductManagement = () => {
   });
 
   useEffect(() => {
-    async function load(){
+    async function load() {
       try {
-        const fetched = await getProducts()
-        setProducts(fetched)
+        const fetched = await getProducts();
+        setProducts(fetched);
       } catch (error) {
-        console.log(error)
-      } finally{
-        setLoading(false)
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
-    load()
-  }, [])
+    load();
+  }, []);
 
-
-  if(loading){
-    return <Loading size="lg"/>
+  if (loading) {
+    return <Loading size="lg" />;
   }
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div className="max-w-7xl mx-auto px-6 sm:px-4 lg:px-2 py-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
@@ -124,54 +125,17 @@ const ProductManagement = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0">
-                          <img
-                            src={`${product.image}`}
-                            alt={product.name}
-                            className="h-10 w-10 rounded-full object-cover"
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {product.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            ID: {product.id}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {product.category}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        R$ {product.price.toFixed(2)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                      {product.inStock}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex">
-                      <Link to={`/dashboard/produtos/editar/${product.id}`} className="text-blue-600 cursor-pointer hover:bg-blue-100 p-2 rounded">
-                        <Edit className="h-4 w-4" />
-                      </Link>
-                      <button className="text-red-600 cursor-pointer hover:bg-blue-100 p-2 rounded ml-2" onClick={() => {
-                        removeProducts(product.id)
-                        const newProducts = products.filter(p => p.id !== product.id)
-                        setProducts(newProducts)
-                      }}>
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
+                  <ProductItem
+                    key={product.id}
+                    product={product}
+                    removeProducts={() => {
+                      removeProducts(product.id);
+                      const newProducts = products.filter(
+                        (p) => p.id !== product.id
+                      );
+                      setProducts(newProducts);
+                    }}
+                  />
                 ))}
                 {filteredProducts.length === 0 && (
                   <tr>
@@ -212,6 +176,7 @@ const ProductManagement = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

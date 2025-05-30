@@ -1,8 +1,14 @@
 import * as Label from "@radix-ui/react-label";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid'
+
 const RegisterForm = () => {
   const { addUser, isEmailValid } = useUser();
+  const { login } = useAuth();
+  const navigate = useNavigate()
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -11,12 +17,12 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEmailValid(email)) {
       if (password === confirmPassword) {
         const user = {
-          id: 1,
+          id: uuidv4(),
           email: email,
           password: password,
           role: "user",
@@ -24,9 +30,11 @@ const RegisterForm = () => {
           phone: phone,
           cart: [],
           order: [],
-          address: []
+          address: [],
         };
-        addUser(user);
+        await addUser(user);
+        await login(user.email, user.password);
+        navigate("/")
       } else {
         setErrorMessage("As senhas não são iguais");
         setError(true);

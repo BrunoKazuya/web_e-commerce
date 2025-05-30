@@ -6,13 +6,18 @@ import Footer from "../components/Footer";
 import { useUser } from "../contexts/UserContext";
 import { useEffect, useState } from "react";
 import Loading from "../components/ui/Loading";
+import { v4 as uuidv4 } from "uuid";
+import { useProduct } from "../contexts/ProductContext";
 
 const CartPage = () => {
-  const [subTotal, setSubTotal] = useState(0);
-  const total = subTotal;
-  const [loading, setLoading] = useState(true)
+  const { updateQuantityInStock } = useProduct();
   const { getCart, deleteCart, addOrder, setCartQuantity } = useUser();
+
+  const [subTotal, setSubTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [productCart, setProductCart] = useState([]);
+
+  const total = subTotal;
 
   useEffect(() => {
     async function load() {
@@ -21,8 +26,8 @@ const CartPage = () => {
         setProductCart(fetched);
       } catch (error) {
         console.log(error);
-      } finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -44,26 +49,27 @@ const CartPage = () => {
 
   const order = () => {
     const order = {
-      id: 1,
+      id: uuidv4(),
       date: Date.now(),
       total: total,
-      products: productCart.map(product => {
-      return {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        subTotal: product.price * product.quantity,
-      }
-    })
-    }
-    setProductCart([])
-    setCartQuantity(0)
-    addOrder(order)
-  }
+      products: productCart.map((product) => {
+        updateQuantityInStock(product.id, product.quantity);
+        return {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: product.quantity,
+          subTotal: product.price * product.quantity,
+        };
+      }),
+    };
+    setProductCart([]);
+    setCartQuantity(0);
+    addOrder(order);
+  };
 
-  if(loading){
-    return <Loading size="lg"/>
+  if (loading) {
+    return <Loading size="lg" />;
   }
 
   return (
@@ -81,9 +87,12 @@ const CartPage = () => {
             <p className="text-gray-600 mb-6">
               Parece que você ainda não adicionou nenhum item ao seu carrinho.
             </p>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800">
-              <Link to="/produtos">Começar a Comprar</Link>
-            </button>
+            <Link
+              to="/produtos"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800"
+            >
+              Começar a Comprar
+            </Link>
           </div>
         )}
 
@@ -121,16 +130,31 @@ const CartPage = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>R$ {subTotal.toFixed(2)}</span>
+                    <span>
+                      R${" "}
+                      {subTotal.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </div>
                   <div className="border-t border-gray-200 pt-3 mt-3">
                     <div className="flex justify-between font-semibold text-lg">
                       <span>Total</span>
-                      <span>R$ {total.toFixed(2)}</span>
+                      <span>
+                        R${" "}
+                        {total.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <button className="w-full mb-4 bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center hover:bg-blue-800 cursor-pointer" onClick={() => order()}>
+                <button
+                  className="w-full mb-4 bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center hover:bg-blue-800 cursor-pointer"
+                  onClick={() => order()}
+                >
                   Finalizar Compra
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </button>

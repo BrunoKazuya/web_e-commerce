@@ -24,7 +24,7 @@
 ## 2 • Descrição do Projeto
 
 ### 2.1 Visão geral
-*BuyThings* é um protótipo de loja online focado exclusivamente em *HTML* e *CSS* nesta etapa inicial (sem JavaScript). O objetivo é demonstrar navegação entre páginas e consistência visual em todos os dispositivos.
+*BuyThings* uma loja online feita em React. O objetivo nessa etapa é de criar toda a interface e funcionalidade do lado do cliente.
 
 
 ### 2.2 Estrutura do projeto
@@ -42,46 +42,90 @@
 │   ├── produtos2.png
 │   ├── sobre.png
 │   ├── user.png
-├── css
-│   ├── estilo.css
-├── img
-│   ├── diagrama.jpg
-│   ├── image.png
-│   ├── produto1.avif
-│   ├── produto2.avif
-│   ├── produto3.avif
-│   ├── produto4.avif
-│   ├── produto5.avif
-│   ├── produto6.avif
-├── javascript
-│   ├── script.js
-├── carrinho.html
-├── index.html
-├── products.html
+├── milestone1
+│   ├── css
+│   │   ├── estilo.css
+│   ├── img
+│   │   ├── diagrama.jpg
+│   │   ├── image.png
+│   │   ├── produto1.avif
+│   │   ├── produto2.avif
+│   │   ├── produto3.avif
+│   │   ├── produto4.avif
+│   │   ├── produto5.avif
+│   │   ├── produto6.avif
+│   ├── javascript
+│   │   ├── script.js
+│   ├── carrinho.html
+│   ├── index.html
+│   ├── products.html
+├── public
+|   ├── img
+│   ├── favicon.ico
+├── src
+│   ├── App.jsx
+│   ├── components
+│   ├── pages
+│   ├── contexts
+│   ├── index.css
+│   ├── main.jsx
 ├── readme.md
 ```
+A estrutura do repositório foi concebida para refletir a evolução do protótipo estático em HTML/CSS/JS para uma aplicação React organizada e escalável. Na raiz, temos duas pastas históricas: capturas/, que armazena todas as screenshots e mockups do protótipo inicial, e milestone1/, onde residem as páginas estáticas (index.html, products.html, carrinho.html) acompanhadas de seus arquivos de estilo (em css/) e de comportamento em JavaScript (em javascript/), além das imagens de produto em milestone1/img/ e do diagrama de navegação.
+
+A pasta public/ é reservada aos ativos estáticos que serão servidos diretamente pelo build do React — como o favicon, imagens de produto e eventuais arquivos que não passam pelo bundler. Já o coração da aplicação em React está em src/, com seu ponto de entrada e roteamento (main.jsx). Dentro de src/contexts/ ficam os providers de estado global (por exemplo, de produtos, de usuário e de carrinho), enquanto src/components/ concentra todos os blocos de interface reutilizáveis (Navbar, Footer, ProductCard, formulários etc.) e src/pages/ reúne cada view de rota (Home, Produtos, Detalhe de Produto, Carrinho e 404).
+
+Esse layout modular permite reuso consistente entre as páginas, separando claramente lógica de dados (nos contexts) e apresentação (nos componentes), e facilita tanto a manutenção quanto a adição de novas funcionalidades sem comprometer a organização do código.
 
 > *Observação:* todas as imagens de snapshots do prototipo estão em `capturas/` na raiz do projeto.
 
 
 ### 2.2 Diagrama de Navegação
-![Diagrama de navegação](img/diagrama.jpg)
+![Diagrama de navegação](milestone1/img/diagrama.jpg)
 
 ## 3 • Sobre o projeto
 
-### 3.1 Descrição das paginas
-|Página             | Função                                          | 
-|--------------------|-------------------------------------------------|
-| **index.html**   | Home/vitrine com banner, seção de destaques, categorias e CTAs. |
-| **products.html**| Catálogo completo de produtos em grade responsiva. | 
-| **carrinho.html**| Mock‑up do carrinho (lista de itens e resumo de valores). |
+### 3.1 Como instalar
+- Node.js ≥ 14 
+- git clone https://github.com/BrunoKazuya/web_e-commerce
+- cd web_e-commerce
+- npm install
+- npm run dev
 
-## 3.2 Componentes principais
+Pronto com isso você pode acessar no navegador http://localhost:5173
 
-| Recurso                | Descrição                                                         |
-|------------------------|-------------------------------------------------------------------|
-| *Cabeçalho fixo*     | Logo BuyThings, menu (Produtos, About, Contact) e ícones. Facilita navegação completa entre páginas. |
-| *Cards de produto*   | Imagem, título, preço e botões de ação (ainda não funcionais). |
-| *Grid/Flex Layout*   | Organiza banners, grades e categorias e garante responsividade inicial. |
-| *Rodapé padrão*      | Links institucionais (Sobre, Contato) e copyright. |
+### 3.2 Tipos de usuario
+
+| Tipo de usuário | Descrição |
+|-----------------|-----------|
+| Visitante | Ele consegue navegar pelas paginas home, produtos, sobre, contato, pagina do produto e autenticação. Ele não consegue adicionar itens ao carrinho e não efetua compra |
+| Cliente | Para ser esse tipo de usuário basta criar uma conta. Ele pode adicionar itens ao carrinho e efetuar compras, além disso ele pode editar o seu perfil |
+| Administrador | Por padrão existe um administrador para acessar basta fazer o login com o email: admin@admin.com e a senha: admin. Ele pode acessar a dashboard onde pode gerenciar a loja, adicionando, atualizando e deletando produtos e pode adicionar usuário, atualizar a permissão dele e também pode deletar |
+
+### 3.3 LocalStorage
+O aplicativo faz uso do localStorage para persistir toda a informação necessária entre sessões, incluindo:
+
+- loggedIn: flag booleana que indica se há um usuário autenticado.
+
+- user: objeto JSON com os dados do usuário atualmente logado (nome, e-mail, papel etc.).
+
+- products: array de objetos que representa o catálogo de produtos da loja.
+
+- users: array de objetos que contém todos os perfis de usuário cadastrados no sistema.
+
+Sempre que o usuário faz login, adiciona itens ao carrinho ou edita seu perfil, nós atualizamos esses itens no localStorage, garantindo que a aplicação possa recarregar o estado completo caso o navegador seja fechado ou a página seja atualizada.
+
+## 4 • Funcionalidades
+
+| Funcionalidade | Descrição |
+|-----------------|-----------|
+| Adicionar ao carrinho | É póssivel adicionar itens ao carrinho e mudar a quantidade deles (o mínimo é 1 e o máximo é quantidade em estoque) |
+| Realizar compra | É possível realizar a "compra" dos itens no carrinho, com a diminuição da quantidade em estoque dos itens comprados |	
+| Gerenciar produto | O administrador pode adicionar, atualizar e remover produtos do catálogo |
+| Gerenciar usuário | O administrador pode adicionar, atualizar apenas a permissão e remover usuários do sistema |
+| Editar perfil | O cliente pode editar o seu perfil, mudando o nome, email e senha |
+| Autenticação | O cliente pode se autenticar no sistema, com o email e senha, e também pode se cadastrar |
+| Dashboard | O administrador pode acessar a dashboard onde pode gerenciar os produtos e usuários |
+|Filtro de produtos | É possível filtrar os produtos por categoria, nome e preço |
+
 

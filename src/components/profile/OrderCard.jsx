@@ -4,7 +4,7 @@ const OrderCard = ({order}) => {
       <div className="flex justify-between items-center">
         <div>
           <p className="font-medium">Pedido #{order.id}</p>
-          <p className="text-sm text-gray-600">{order.date}</p>
+          <p className="text-sm text-gray-600">{new Date(order.date).toLocaleDateString("pt-BR")}</p>
         </div>
         <div className="text-right">
           <p className="font-medium">R${order.total}</p>

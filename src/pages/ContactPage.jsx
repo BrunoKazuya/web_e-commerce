@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {  Mail, Phone, MapPin } from "lucide-react"
 import * as Label from "@radix-ui/react-label"
 const ContactPage = () => {
@@ -82,7 +83,7 @@ const ContactPage = () => {
         </div>
       </div>
     </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
