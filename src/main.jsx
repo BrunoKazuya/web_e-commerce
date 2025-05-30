@@ -22,6 +22,7 @@ import UserManagement from "./pages/admin/UserManagement.jsx";
 import UserNew from "./pages/admin/UserNew.jsx";
 import UserUpdate from "./pages/admin/UserUpdate.jsx";
 import NotFound from "./pages/NotFound.jsx"
+import CheckoutPage from "./pages/CheckoutPage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <CartPage />
+      </PrivateRoute>
+    ),
+  },  
+  {
+    path: "checkout",
+    element: (
+      <PrivateRoute>
+        <CheckoutPage />
       </PrivateRoute>
     ),
   },

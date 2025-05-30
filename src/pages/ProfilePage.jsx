@@ -7,7 +7,7 @@ import { ShoppingCart} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import OrderCard from "../components/profile/OrderCard";
-import AddressForm from "../components/profile/addressForm";
+import AddressForm from "../components/profile/AddressForm"
 import AddressCard from "../components/profile/AddressCard";
 import ChangePasswordForm from "../components/profile/ChangePasswordForm";
 import ProfileForm from "../components/profile/ProfileForm";
