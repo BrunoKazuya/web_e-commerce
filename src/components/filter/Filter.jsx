@@ -92,7 +92,7 @@ const Filter = ({
           {categories.map((category) => (
             <div key={category.slug} className="flex items-center">
               <Checkbox.Root
-                id={`category-${category.slug}`}
+                id={`${category.slug}`}
                 checked={selectedCategory === category.slug}
                 onCheckedChange={() =>
                   onCategoryChange(

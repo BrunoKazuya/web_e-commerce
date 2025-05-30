@@ -16,7 +16,7 @@ export function ProductProvider({ children }) {
           description:
             "Experimente um som cristalino com nossos fones de ouvido Bluetooth premium. Contam com cancelamento ativo de ruído, bateria de 30 horas e design over-ear confortável.",
           image: "produto1.jpeg",
-          category: "eletrônicos",
+          category: "eletronicos",
           inStock: 9,
           rating: 4.8,
         },
@@ -27,7 +27,7 @@ export function ProductProvider({ children }) {
           description:
             "Mantenha-se confortável durante longos dias de trabalho com esta cadeira de escritório ergonômica, com suporte lombar ajustável, encosto em malha respirável e braços personalizáveis.",
           image: "produto2.jpeg",
-          category: "móveis",
+          category: "moveis",
           inStock: 0,
           rating: 4.7,
         },
@@ -38,7 +38,7 @@ export function ProductProvider({ children }) {
           description:
             "Acompanhe suas metas de fitness com este relógio inteligente avançado. Recursos incluem monitor de frequência cardíaca, GPS, análise de sono e resistência à água de até 50 metros.",
           image: "produto3.jpeg",
-          category: "eletrônicos",
+          category: "eletronicos",
           inStock: 4,
           rating: 4.5,
         },
@@ -49,7 +49,7 @@ export function ProductProvider({ children }) {
           description:
             "Melhore seu espaço de trabalho com esta luminária de mesa minimalista. Ajuste de brilho, controle de temperatura de cor e iluminação LED de baixo consumo.",
           image: "produto4.jpeg",
-          category: "casa",
+          category: "casa-cozinha",
           inStock: 6,
           rating: 4.3,
         },
@@ -60,7 +60,7 @@ export function ProductProvider({ children }) {
           description:
             "Capture fotos incríveis com esta lente profissional para câmera. Possui autofoco rápido, redução de vibração e desempenho excepcional em baixa luminosidade.",
           image: "produto5.png",
-          category: "eletrônicos",
+          category: "eletronicos",
           inStock: 1,
           rating: 4.9,
         },
@@ -82,7 +82,7 @@ export function ProductProvider({ children }) {
           description:
             "Leve sua música para qualquer lugar com esta caixa de som Bluetooth compacta e potente. Bateria de 12 horas, design à prova d’água e som rico e claro.",
           image: "produto7.jpeg",
-          category: "eletrônicos",
+          category: "eletronicos",
           inStock: 5,
           rating: 4.4,
         },
