@@ -117,6 +117,7 @@ const AddressForm = ({
           <button
             type="submit"
             className="bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-800 cursor-pointer"
+            onClick={()=>{alert("endereço adicionado")}}
           >
             Adicionar Endereço
           </button>

@@ -22,6 +22,7 @@ import UserManagement from "./pages/admin/UserManagement.jsx";
 import UserNew from "./pages/admin/UserNew.jsx";
 import UserUpdate from "./pages/admin/UserUpdate.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
+import PurchaseSuccess from "./pages/EndPage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -49,6 +50,12 @@ const router = createBrowserRouter([
       <PrivateRoute>
         <CheckoutPage />
       </PrivateRoute>
+    ),
+  },
+  {
+    path: "success",
+    element: (
+        <PurchaseSuccess />
     ),
   },
   {

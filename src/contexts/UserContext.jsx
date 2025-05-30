@@ -1,3 +1,4 @@
+import { CreditCard } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
@@ -22,6 +23,7 @@ export function UserProvider({ children }) {
         cart: [],
         order: [],
         address: [],
+        card: [],
       };
 
       // 2. Cria um array contendo esse objeto
@@ -288,6 +290,46 @@ function getUserById(id){
     localStorage.setItem("users", JSON.stringify(updateUsers));
   }
 
+  function getCard() {
+  const user = getUser();
+  return user.card;
+  }
+
+function addCard(card) {
+  const user = getUser();
+  if (!user.card) user.card = [];
+  card.id = user.card.length + 1;
+  user.card.push(card);
+  localStorage.setItem("user", JSON.stringify(user));
+
+  const users = getUsers();
+  const updateUsers = users.map(u => u.id === user.id ? user : u);
+  localStorage.setItem("users", JSON.stringify(updateUsers));
+}
+
+function updateCard(card) {
+  const user = getUser();
+  if (!user.card) user.card = [];
+  user.card = user.card.map(c => c.id === card.id ? card : c);
+  localStorage.setItem("user", JSON.stringify(user));
+
+  const users = getUsers();
+  const updateUsers = users.map(u => u.id === user.id ? user : u);
+  localStorage.setItem("users", JSON.stringify(updateUsers));
+}
+
+function removeCard(id) {
+  const user = getUser();
+  if (!user.card) user.card = [];
+  user.card = user.card.filter(c => c.id !== id);
+  localStorage.setItem("user", JSON.stringify(user));
+
+  const users = getUsers();
+  const updateUsers = users.map(u => u.id === user.id ? user : u);
+  localStorage.setItem("users", JSON.stringify(updateUsers));
+}
+
+
   return (
     <UserContext.Provider
       value={{
@@ -312,6 +354,10 @@ function getUserById(id){
         getUsers,
         removeUser,
         getUserById,
+        getCard,
+        addCard,
+        updateCard,
+        removeCard,
       }}
     >
       {children}

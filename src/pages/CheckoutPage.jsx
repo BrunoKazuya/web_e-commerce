@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CreditCard, User } from 'lucide-react';
+import { ArrowLeft,  User } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Label } from '@radix-ui/react-dropdown-menu';
@@ -10,30 +10,63 @@ import { useUser } from '../contexts/UserContext';
 import Loading from '../components/ui/Loading';
 import Endereco from '../components/address/Endereco';
 import AddressForm from '../components/profile/AddressForm';
+import Card from '../components/creditcard/Card';
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
 const CheckoutPage = () => {
 
-  const { getUser , getCart } = useUser();
+  const navigate = useNavigate();
+const { getUser, getCart, getCard ,addOrder , setCartQuantity } = useUser();
   const [cartItems,setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user,setUser] = useState({})
-  const [payment,setPayment] = useState("credit");
+  const [card2, setCard2] = useState([]);  
+  const [productCart, setProductCart] = useState([]);
+
+  
 
   useEffect(() => {
     async function Load(){
       try{
         const fetchedUSer = await getUser();
         const fetchedCart = await getCart();
+        const fetchedCard = await getCard();
         setCartItems(fetchedCart);
+        setCard2(fetchedCard);
         setUser(fetchedUSer);
       }catch(error){console.log(error)}finally{setLoading(false)}
     } 
     Load();
-  }),[];
+  },[]);
   if(loading){
     return(
       <Loading size='lg'/>
     );
+  }
+  
+  const order = () => {
+    const order = {
+      id: uuidv4(),
+      date: Date.now(),
+      total: totalPrice,
+      products: cartItems.map(product => {
+      return {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: product.quantity,
+        subTotal: product.price * product.quantity,
+      }
+    })
+    
+    }
+
+    addOrder(order);
+    setProductCart([])
+    setCartQuantity(0)
+    navigate('/success');
+
   }
 
   const totalPrice = cartItems.reduce((accumulator, product) => {
@@ -84,102 +117,9 @@ const CheckoutPage = () => {
             address={user.address} 
 
             />
-           <AddressForm/>
 
             {/* Forma de Pagamento */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center">
-                <CreditCard className="mr-2 h-5 w-5" />
-                Forma de Pagamento
-              </h2>
-              
-              <div className="mb-4">
-                <div className="flex space-x-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="credit"
-                      onChange={() => setPayment(credit)}
-                      className="mr-2"
-                    />
-                    Cartão de Crédito
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="debit"
-                      onChange={() => setPayment(debit)}
-                      className="mr-2"
-                    />
-                    Cartão de Débito
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="pix"
-                      onChange={() => setPayment(pix)}
-                      className="mr-2"
-                    />
-                    PIX
-                  </label>
-                </div>
-              </div>
-
-              {(payment === 'credit' || payment === 'debit') && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <Label htmlFor="cardNumber">Número do Cartão</Label>
-                    {/*falta value e onChange*/}
-                    <Input
-                      id="cardNumber"
-                      name="cardNumber"
-                  
-                      placeholder="0000 0000 0000 0000"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="cardName">Nome no Cartão</Label>
-                    
-                    <Input
-                      id="cardName"
-                      name="cardName"
-                
-                      placeholder="Nome conforme no cartão"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expiryDate">Validade</Label>
-                    <Input
-                      id="expiryDate"
-                      name="expiryDate"
-                   
-                      placeholder="MM/AA"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="cvv">CVV</Label>
-                    <Input
-                      id="cvv"
-                      name="cvv"
-               
-
-                      placeholder="123"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {payment === 'pix' && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">
-                    Após confirmar o pedido, você receberá o código PIX para pagamento.
-                  </p>
-                </div>
-              )}
-            </div>
+            <Card/>
           </div>
 
           {/* Resumo do Pedido */}
@@ -225,7 +165,7 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              <Button className="flex justify-center items-center py-3 w-full mt-6 bg-blue-500 text-white rounded hover:opacity-80">
+              <Button onClick={order} className="flex justify-center items-center py-3 w-full mt-6 bg-blue-500 text-white rounded hover:opacity-80">
                 Confirmar Pedido
               </Button>
             </div>

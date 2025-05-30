@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { useUser } from "../contexts/UserContext";
 import { useEffect, useState } from "react";
 import Loading from "../components/ui/Loading";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const [subTotal, setSubTotal] = useState(0);
@@ -13,6 +14,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true)
   const { getCart, deleteCart, addOrder, setCartQuantity } = useUser();
   const [productCart, setProductCart] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function load() {
@@ -43,23 +45,9 @@ const CartPage = () => {
   }
 
   const order = () => {
-    const order = {
-      id: 1,
-      date: Date.now(),
-      total: total,
-      products: productCart.map(product => {
-      return {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        subTotal: product.price * product.quantity,
-      }
-    })
-    }
-    setProductCart([])
-    setCartQuantity(0)
-    addOrder(order)
+
+    navigate('/checkout');
+
   }
 
   if(loading){
