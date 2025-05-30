@@ -9,16 +9,20 @@ import { useEffect, useState } from "react";
 import Loading from "../../components/ui/Loading";
 
 const ProductUpdate = () => {
-  const { updateProduct, getProductById } = useProduct();
+  const { updateProduct, getProductById, getCategories } = useProduct();
   const { id } = useParams();
   const navigate = useNavigate()
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([])
   useEffect(() => {
     async function load() {
       try {
-        const fetched = await getProductById(id);
-        setProduct(fetched);
+        const fetchedProducts = await getProductById(id);
+        const fetchedCategories = await getCategories();
+        
+        setProduct(fetchedProducts);
+        setCategories(fetchedCategories)
       } catch (err) {
         console.log(err);
       } finally {
@@ -57,6 +61,7 @@ const ProductUpdate = () => {
                 update(newProduct);
                 navigate("/dashboard/produtos")
               }}
+              categories={categories}
             />
           </div>
         </div>

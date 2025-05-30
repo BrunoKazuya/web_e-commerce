@@ -4,10 +4,29 @@ import Navbar from "../../components/Navbar";
 import { ArrowLeft } from "lucide-react";
 import { useProduct } from "../../contexts/ProductContext";
 import ProductForm from "../../components/product/ProductForm";
-
+import { useState, useEffect } from "react";
+import Loading from "../../components/ui/Loading";
 const ProductNew = () => {
-    const {addProduct} = useProduct()
+    const {addProduct, getCategories} = useProduct()
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([])
+  useEffect(() => {
+    async function load() {
+      try {
+        const fetchedCategories = await getCategories();
+        setCategories(fetchedCategories)
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
 
+  if (loading) {
+    return <Loading size="lg" />;
+  }
   const add = (newProduct) => {
     addProduct(newProduct);
   }
@@ -28,7 +47,7 @@ const ProductNew = () => {
           </Link>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h1 className="text-2xl font-bold mb-6">Adicionar Novo Produto</h1>
-            <ProductForm isAdd={true} add={(newProduct) => add(newProduct)}/>
+            <ProductForm isAdd={true} add={(newProduct) => add(newProduct)} categories={categories}/>
           </div>
         </div>
       </div>

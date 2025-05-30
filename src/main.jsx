@@ -21,6 +21,7 @@ import ProductUpdate from "./pages/admin/ProductUpdate.jsx";
 import UserManagement from "./pages/admin/UserManagement.jsx";
 import UserNew from "./pages/admin/UserNew.jsx";
 import UserUpdate from "./pages/admin/UserUpdate.jsx";
+import NotFound from "./pages/NotFound.jsx"
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import PurchaseSuccess from "./pages/EndPage.jsx";
 const router = createBrowserRouter([
@@ -138,6 +139,10 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+    path:'*',
+    element: <NotFound/>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const Dashboard = () => {
   const summary = {
@@ -215,6 +216,7 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

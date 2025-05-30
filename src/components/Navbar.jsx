@@ -3,24 +3,34 @@ import { useState, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
   const { isLoggedIn, logout, isAdmin } = useAuth();
   const { cartQuantity } = useUser();
+  const navigate = useNavigate()
+
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedSearch, setSelectedSearch] = useState(false);
   const closeTimer = useRef(null);
   const handleMouseEnter = () => {
     clearTimeout(closeTimer.current);
     setOpen(true);
   };
   const handleMouseLeave = () => {
-    // fecha só depois de 200ms, para dar tempo de passar do botão pro menu
     closeTimer.current = setTimeout(() => setOpen(false), 200);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    navigate(`/produtos?searchNavbar=${search}`)
+  }
+
   return (
     <header>
-      <nav className="bg-white shadow-md z-50">
+      <nav className="bg-white shadow-md z-50 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="">
@@ -40,7 +50,10 @@ const Navbar = () => {
               </a>
             </div>
             <div className="flex space-x-2">
-              <div className="p-2 hover:bg-blue-100 rounded-lg cursor-pointer flex items-center">
+              <div
+                className="p-2 hover:bg-blue-100 rounded-lg cursor-pointer flex items-center"
+                onClick={() => setSelectedSearch(!selectedSearch)}
+              >
                 <Search className="h-5 w-5" />
               </div>
               {isLoggedIn && (
@@ -131,12 +144,43 @@ const Navbar = () => {
               <a href="/sobre" className="block hover:text-blue-600">
                 Sobre
               </a>
-              <a href="/contatos" className="block hover:text-blue-600">
-                Contatos
+              <a href="/contato" className="block hover:text-blue-600">
+                Contato
               </a>
             </div>
           </div>
         </div>
+        {selectedSearch && (
+          <div className="mb-6 w-full absolute top-full mt-6 px-5 sm:px-0">
+            <form onSubmit={handleSubmit}>
+              <div className="relative w-full sm:w-md mx-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-search absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+                >
+                  <path d="m21 21-4.34-4.34" />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+                <input
+                  id="search"
+                  type="text"
+                  placeholder="Buscar produtos"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 bg-white shadow-lg"
+                />
+              </div>
+            </form>
+          </div>
+        )}
       </nav>
     </header>
   );

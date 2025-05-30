@@ -14,7 +14,7 @@ const ProfileForm = ({user}) => {
     const [success, setSuccess] = useState(false)
 const onHandleSubmit = (e) => {
     e.preventDefault()
-    const isValid = updateUser(name, email, phone)
+    const isValid = updateUser({name: name, email:email, phone:phone}, true)
     if(!isValid){
         setError(true)
         setSuccess(false)

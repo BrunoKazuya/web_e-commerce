@@ -60,7 +60,7 @@ const ProfilePage = () => {
             </div>
 
             <Tabs.Root defaultValue="orders" className="mt-6">
-              <Tabs.List className="grid grid-cols-3 mb-8 w-full bg-gray-100 rounded-lg p-1">
+              <Tabs.List className="grid grid-cols-1 sm:grid-cols-3 mb-8 w-full bg-gray-100 rounded-lg p-1">
                 <Tabs.Trigger
                   value="orders"
                   className={`flex items-center py-1 px-2 text-center cursor-pointer ${

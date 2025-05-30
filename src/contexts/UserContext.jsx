@@ -38,33 +38,35 @@ export function UserProvider({ children }) {
     const stored = localStorage.getItem("users");
 
     const users = stored ? JSON.parse(stored) : [];
-    user.id = users.length + 1;
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
   }
 
   function updateUser(newUser, mine) {
-    
-
-    if(mine){
+    if (mine) {
       const user = getUser();
       if (!(user.email === newUser.email) && !isEmailValid(newUser.email)) {
-      return false;
+        return false;
+      }
+      const updatedUser = {
+        ...user,
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      saveUsers(updatedUser);
+    } else {
+      const user = getUserById(newUser.id);
+      const updatedUser = { ...user, role: newUser.role };
+      saveUsers(updatedUser);
     }
-    const updatedUser = { ...user, name: newUser.name, email: newUser.email, phone: newUser.phone };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    saveUsers(updatedUser)
-    } else{
-      const user = getUserById(newUser.id)
-      const updatedUser = {...user, role: newUser.role}
-      saveUsers(updatedUser)
-    }
-   
+
     return true;
   }
 
-  function saveUsers(user){
-     const users = getUsers();
+  function saveUsers(user) {
+    const users = getUsers();
     const updateUsers = users.map((u) => {
       if (u.id === user.id) {
         return user;
@@ -82,11 +84,10 @@ export function UserProvider({ children }) {
     );
   }
 
-function getUserById(id){
-  const users = getUsers()
-  return users.find(u => u.id === Number(id))
-
-}
+  function getUserById(id) {
+    const users = getUsers();
+    return users.find((u) => u.id === id);
+  }
 
   function updatePasswordUser(newPassword) {
     const user = getUser();
@@ -140,8 +141,6 @@ function getUserById(id){
       if (productCart.quantity + quantity > productCart.inStock) {
         productCart.quantity = productCart.inStock;
       } else {
-        console.log(productCart.quantity);
-
         productCart.quantity = productCart.quantity + quantity;
       }
       user.cart.map((p) => {
@@ -151,7 +150,7 @@ function getUserById(id){
         return p;
       });
     } else {
-      console.log("oi");
+      setCartQuantity(cartQuantity + 1);
       product = { ...product, quantity: quantity };
       user.cart.push(product);
     }
@@ -165,7 +164,6 @@ function getUserById(id){
       return u;
     });
     localStorage.setItem("users", JSON.stringify(updateUsers));
-    setCartQuantity(cartQuantity + 1);
   }
 
   function updateCart(product, quantity) {
@@ -216,7 +214,6 @@ function getUserById(id){
 
   function addOrder(order) {
     const user = getUser();
-    order.id = user.order.length + 1;
     user.order.push(order);
     user.cart = [];
     localStorage.setItem("user", JSON.stringify(user));
@@ -244,7 +241,6 @@ function getUserById(id){
 
   function addAddress(address) {
     const user = getUser();
-    address.id = user.address.length + 1;
     user.address.push(address);
     localStorage.setItem("user", JSON.stringify(user));
     const users = getUsers();

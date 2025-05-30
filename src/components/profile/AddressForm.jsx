@@ -1,7 +1,7 @@
 import * as Label from "@radix-ui/react-label";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-
+import { v4 as uuidv4 } from 'uuid'
 const AddressForm = ({
   onAddAddress,
   onUpdateAddress = () => {},
@@ -21,7 +21,7 @@ const AddressForm = ({
     e.preventDefault();
     if (isAdd) {
       const newAddress = {
-        id: 1,
+        id: uuidv4(),
         street: street,
         city: city,
         state: state,

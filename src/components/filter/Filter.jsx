@@ -10,14 +10,11 @@ const Filter = ({
   onPriceChange,
   selectedSearch,
   onSearchChange,
+  minMaxRange,
+  categories
 }) => {
   // Lista de categorias fixas
-  const categories = [
-    { id: "esporte", name: "Esporte" },
-    { id: "casual", name: "Casual" },
-    { id: "formal", name: "Formal" },
-    { id: "electronics", name: "Electronicos" },
-  ];
+
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -26,7 +23,7 @@ const Filter = ({
         <h2 className="text-lg font-semibold">Filtros</h2>
         <button
           onClick={() => {
-            onPriceChange(1000);
+            onPriceChange([minMaxRange[0], minMaxRange[1]]);
             onCategoryChange("");
             onSearchChange("");
           }}
@@ -93,13 +90,13 @@ const Filter = ({
         <h3 className="font-medium mb-3">Categorias</h3>
         <div className="space-y-2">
           {categories.map((category) => (
-            <div key={category.id} className="flex items-center">
+            <div key={category.slug} className="flex items-center">
               <Checkbox.Root
-                id={`category-${category.id}`}
-                checked={selectedCategory === category.id}
+                id={`category-${category.slug}`}
+                checked={selectedCategory === category.slug}
                 onCheckedChange={() =>
                   onCategoryChange(
-                    selectedCategory === category.id ? "" : category.id
+                    selectedCategory === category.slug ? "" : category.slug
                   )
                 }
                 className="h-4 w-4 border border-gray-200 rounded-sm flex items-center justify-center cursor-pointer hover:bg-blue-100"
@@ -122,7 +119,7 @@ const Filter = ({
                 </Checkbox.Indicator>
               </Checkbox.Root>
               <Label.Root
-                htmlFor={`category-${category.id}`}
+                htmlFor={`category-${category.slug}`}
                 className="ml-2 text-sm cursor-pointer"
               >
                 {category.name}
@@ -134,11 +131,12 @@ const Filter = ({
 
       {/* Slider de preço (se precisar integrar, passe callbacks) */}
        <div className="mb-6">
-              <h3 className="font-medium mb-3">Price Range</h3>
+              <h3 className="font-medium mb-3">Preço</h3>
               <Slider.Root
                 value={selectedPrice}
-                max={1000}
-                step={50}
+                min={minMaxRange[0]}
+                max={minMaxRange[1]}
+                step={1}
                 onValueChange={onPriceChange}
                 className="relative flex items-center select-none touch-none w-full h-5"
               >
@@ -149,7 +147,7 @@ const Filter = ({
                   <Slider.Thumb key={idx} className="block w-5 h-5 bg-white border border-gray-200 rounded-full cursor-pointer hover:bg-blue-800" />
                 ))}
               </Slider.Root>
-              <div className="flex items-center justify-between mt-4"><span className="text-sm">${selectedPrice[0]}</span><span className="text-sm">${selectedPrice[1]}</span></div>
+              <div className="flex items-center justify-between mt-4"><span className="text-sm">R${selectedPrice[0]}</span><span className="text-sm">R${selectedPrice[1]}</span></div>
             </div>
     </div>
   );

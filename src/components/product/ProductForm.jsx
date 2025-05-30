@@ -1,24 +1,25 @@
 import * as Label from "@radix-ui/react-label";
 import { useState } from "react";
-
+import { v4 as uuidv4 } from 'uuid'
 const ProductForm = ({
   isAdd = true,
   add = () => {},
   product = {},
   update = () => {},
+  categories,
 }) => {
   const [name, setName] = useState(product?.name || "");
   const [price, setPrice] = useState(product?.price || "");
   const [description, setDescription] = useState(product?.description || "");
   const [category, setCategory] = useState(product?.category || "");
-  const [url, setUrl] = useState(product?.url || "");
-  const [stock, setStock] = useState(product?.stock || "");
+  const [url, setUrl] = useState(product?.image || "");
+  const [stock, setStock] = useState(product?.inStock || "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isAdd) {
       const newProduct = {
-        id: 1,
+        id: uuidv4(),
         name: name,
         price: Number(price),
         description: description,
@@ -107,10 +108,9 @@ const ProductForm = ({
             className="py-2 px-3 border border-gray-200 rounded-md text-sm w-full focus:outline-none focus:border-gray-400"
           >
             <option value="">Selecione uma categoria</option>
-            <option value="esporte">Esporte</option>
-            <option value="eletronico">Eletrônico</option>
-            <option value="moda">Moda</option>
-            <option value="casa">Casa</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.slug} >{category.name}</option>
+            ))}
           </select>
         </div>
         <div className="space-y-2">
