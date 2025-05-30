@@ -134,7 +134,6 @@ export function ProductProvider({ children }) {
   function getProducts(inStock) {
     const stored = localStorage.getItem("products");
     const products = stored ? JSON.parse(stored) : [];
-    console.log(products);
     if (inStock) return products.filter((p) => p.inStock > 0);
     return products;
   }

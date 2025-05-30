@@ -3,9 +3,9 @@ import { useUser } from "../../contexts/UserContext";
 import { CreditCard } from "lucide-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 
-const Card = () => {
+const Card = ({cardSelected}) => {
   const { getCard, addCard } = useUser();
-
+  const [success, setSuccess] = useState(false);
   const [payment, setPayment] = useState("credit");
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
@@ -14,10 +14,11 @@ const Card = () => {
   const [cards, setCards] = useState([]);
   const [addingNew, setAddingNew] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(null);
-
+  const successMessage = "Cartão adicionado";
   useEffect(() => {
     const storedCards = getCard();
     if (storedCards && storedCards.length > 0) {
+      cardSelected(true)
       setCards(storedCards);
       setSelectedCardId(storedCards[0].id || 0);
       setAddingNew(false);
@@ -28,7 +29,7 @@ const Card = () => {
 
   const saveCard = () => {
     const newCard = {
-      id: cards.length > 0 ? Math.max(...cards.map(c => c.id)) + 1 : 1,
+      id: cards.length > 0 ? Math.max(...cards.map((c) => c.id)) + 1 : 1,
       cardNumber,
       cardName,
       expiryDate,
@@ -36,10 +37,11 @@ const Card = () => {
       paymentMethod: payment,
     };
     addCard(newCard);
-    alert("Cartão salvo com sucesso!");
     setCards((prev) => [...prev, newCard]);
     setSelectedCardId(newCard.id);
     setAddingNew(false);
+    setSuccess(true)
+    cardSelected(true)
   };
 
   return (
@@ -55,7 +57,7 @@ const Card = () => {
             {cards.map((c) => (
               <label
                 key={c.id}
-                className="flex items-center border p-4 rounded cursor-pointer hover:bg-gray-100"
+                className="flex items-center border border-gray-200 p-4 rounded cursor-pointer hover:bg-gray-100"
               >
                 <input
                   type="radio"
@@ -65,16 +67,30 @@ const Card = () => {
                   onChange={() => setSelectedCardId(c.id)}
                 />
                 <div>
-                  <p><strong>Método:</strong> {c.paymentMethod === "credit" ? "Crédito" : c.paymentMethod === "debit" ? "Débito" : "PIX"}</p>
-                  <p><strong>Número:</strong> **** **** **** {c.cardNumber.slice(-4)}</p>
-                  <p><strong>Nome:</strong> {c.cardName}</p>
-                  <p><strong>Validade:</strong> {c.expiryDate}</p>
+                  <p>
+                    <strong>Método:</strong>{" "}
+                    {c.paymentMethod === "credit"
+                      ? "Crédito"
+                      : c.paymentMethod === "debit"
+                      ? "Débito"
+                      : "PIX"}
+                  </p>
+                  <p>
+                    <strong>Número:</strong> **** **** ****{" "}
+                    {c.cardNumber.slice(-4)}
+                  </p>
+                  <p>
+                    <strong>Nome:</strong> {c.cardName}
+                  </p>
+                  <p>
+                    <strong>Validade:</strong> {c.expiryDate}
+                  </p>
                 </div>
               </label>
             ))}
           </div>
           <button
-            className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 cursor-pointer w-full"
             onClick={() => setAddingNew(true)}
           >
             Adicionar novo cartão
@@ -107,12 +123,19 @@ const Card = () => {
 
           {(payment === "credit" || payment === "debit") && (
             <>
+              {success && (
+                <div className="bg-green-200 w-full text-green-500 py-2 rounded-lg text-center">
+                  {successMessage}
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <Label htmlFor="cardNumber">Número do Cartão</Label>
                   <input
                     id="cardNumber"
                     name="cardNumber"
+                    type="number"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="0000 0000 0000 0000"
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
@@ -123,6 +146,8 @@ const Card = () => {
                   <input
                     id="cardName"
                     name="cardName"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="Nome conforme no cartão"
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value)}
@@ -133,6 +158,8 @@ const Card = () => {
                   <input
                     id="expiryDate"
                     name="expiryDate"
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="MM/AA"
                     value={expiryDate}
                     onChange={(e) => setExpiryDate(e.target.value)}
@@ -143,6 +170,8 @@ const Card = () => {
                   <input
                     id="cvv"
                     name="cvv"
+                    type="number"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="123"
                     value={cvv}
                     onChange={(e) => setCvv(e.target.value)}
@@ -151,7 +180,7 @@ const Card = () => {
               </div>
               <button
                 onClick={saveCard}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 cursor-pointer"
               >
                 Salvar Cartão
               </button>
@@ -161,7 +190,8 @@ const Card = () => {
           {payment === "pix" && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-600">
-                Após confirmar o pedido, você receberá o código PIX para pagamento.
+                Após confirmar o pedido, você receberá o código PIX para
+                pagamento.
               </p>
             </div>
           )}

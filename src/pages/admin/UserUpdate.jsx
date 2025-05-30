@@ -23,7 +23,6 @@ const UserUpdate = () => {
     async function load() {
       try {
         const fetched = await getUserById(id);
-        console.log(fetched)
         setUser(fetched);
       } catch (error) {
         console.log(error);

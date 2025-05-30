@@ -3,15 +3,23 @@ import { MapPin } from "lucide-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import AddressForm from "../profile/AddressForm";
 
-const Endereco = ({ address: initialAddresses = [] }) => {
+const Endereco = ({ address: initialAddresses = [], addressSelected }) => {
   const [addresses, setAddresses] = useState(initialAddresses);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState("");
 
   useEffect(() => {
     setAddresses(initialAddresses);
+    if (initialAddresses.length > 0) {
+      addressSelected(true)
+      setSelectedId(initialAddresses[0].id);
+    }
   }, [initialAddresses]);
 
   const handleAddAddress = (newAddress) => {
+    if(addresses.length === 0){
+      addressSelected(true)
+      setSelectedId(newAddress.id);
+    }
     setAddresses((prev) => [...prev, newAddress]);
   };
 
@@ -24,7 +32,8 @@ const Endereco = ({ address: initialAddresses = [] }) => {
       <ul>
         {addresses.map((addr) => {
           const street = addr.street?.split(",")[0]?.trim() || "";
-          const number = addr.street?.split(",")[1]?.split("-")[0]?.trim() || "";
+          const number =
+            addr.street?.split(",")[1]?.split("-")[0]?.trim() || "";
           const neighborhood = addr.street?.split("-")[1]?.trim() || "";
 
           return (
@@ -89,7 +98,6 @@ const Endereco = ({ address: initialAddresses = [] }) => {
         })}
       </ul>
 
-      {/* Sempre mostrar o formulário para adicionar novo endereço */}
       <AddressForm onAddAddress={handleAddAddress} />
     </>
   );

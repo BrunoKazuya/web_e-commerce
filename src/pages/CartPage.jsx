@@ -7,12 +7,9 @@ import { useUser } from "../contexts/UserContext";
 import { useEffect, useState } from "react";
 import Loading from "../components/ui/Loading";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { useProduct } from "../contexts/ProductContext";
 
 const CartPage = () => {
-  const { updateQuantityInStock } = useProduct();
-  const { getCart, deleteCart, addOrder, setCartQuantity } = useUser();
+  const { getCart, deleteCart} = useUser();
 
   const [subTotal, setSubTotal] = useState(0);
   const [loading, setLoading] = useState(true);

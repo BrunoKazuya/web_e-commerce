@@ -1,4 +1,3 @@
-import { CreditCard } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
@@ -158,7 +157,6 @@ export function UserProvider({ children }) {
     const users = getUsers();
     const updateUsers = users.map((u) => {
       if (u.id === user.id) {
-        console.log(user);
         return user;
       }
       return u;
@@ -182,7 +180,6 @@ export function UserProvider({ children }) {
     const users = getUsers();
     const updateUsers = users.map((u) => {
       if (u.id === user.id) {
-        console.log(user);
         return user;
       }
       return u;
@@ -194,7 +191,6 @@ export function UserProvider({ children }) {
     const user = getUser();
     const productCart = user.cart.filter((p) => p.id !== id);
     user.cart = productCart;
-    console.log(user);
     localStorage.setItem("user", JSON.stringify(user));
     const users = getUsers();
     users.map((u) => {
@@ -220,7 +216,6 @@ export function UserProvider({ children }) {
     const users = getUsers();
     const updateUsers = users.map((u) => {
       if (u.id === user.id) {
-        console.log(user);
         return user;
       }
       return u;

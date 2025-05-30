@@ -5,7 +5,6 @@ import { useUser } from "./UserContext"
 const PrivateRoute = ({children, requiredRole}) => {
     const { isLoggedIn } = useAuth()
     const { getUser } = useUser()
-    console.log(isLoggedIn)
     if(!isLoggedIn){
         return <Navigate to={"/auth"} replace/>
     }
