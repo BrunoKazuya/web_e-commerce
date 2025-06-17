@@ -17,8 +17,21 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^\(\d{2}\)\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isValidPhone(phone)) {
+      setErrorMessage("Formato de telefone inválido. Use (xx)xxxxxxxxx.");
+      setError(true);
+      return;
+    }
+
     if (isEmailValid(email)) {
       if (password === confirmPassword) {
         const user = {
@@ -44,6 +57,16 @@ const RegisterForm = () => {
       setError(true);
     }
   };
+
+const handlePhoneChange = (e) => {
+  const value = e.target.value;
+  const sanitized = value.replace(/[^0-9()]/g, "");
+  setPhone(sanitized);
+  if (error) setError(false);
+};
+
+
+
   return (
     <>
       <h2 className="text-2xl font-bold mb-6 text-center">Criar uma conta</h2>
@@ -91,10 +114,12 @@ const RegisterForm = () => {
           </Label.Root>
           <input
             id="registerPhone"
-            type="text"
-            placeholder="(xx)xxxxx-xxxx"
+            type="tel"
+            placeholder="(xx)xxxxxxxxx"
+            pattern="\(\d{2}\)\d{9}"
+            title="Formato esperado: (11)912345678"
             required
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={handlePhoneChange}
             className="w-full px-3 py-2 border rounded-lg border-gray-300  focus:outline-none focus:border-gray-400"
           />
         </div>

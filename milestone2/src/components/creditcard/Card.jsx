@@ -4,7 +4,7 @@ import { CreditCard } from "lucide-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 
 const Card = ({cardSelected}) => {
-  const { getCard, addCard } = useUser();
+  const { getCard, addCard, removeCard} = useUser();
   const [success, setSuccess] = useState(false);
   const [payment, setPayment] = useState("credit");
   const [cardNumber, setCardNumber] = useState("");
@@ -14,7 +14,9 @@ const Card = ({cardSelected}) => {
   const [cards, setCards] = useState([]);
   const [addingNew, setAddingNew] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(null);
+  const [cardError, setCardError] = useState("");
   const successMessage = "Cartão adicionado";
+
   useEffect(() => {
     const storedCards = getCard();
     if (storedCards && storedCards.length > 0) {
@@ -27,22 +29,111 @@ const Card = ({cardSelected}) => {
     }
   }, []);
 
-  const saveCard = () => {
-    const newCard = {
-      id: cards.length > 0 ? Math.max(...cards.map((c) => c.id)) + 1 : 1,
-      cardNumber,
-      cardName,
-      expiryDate,
-      cvv,
-      paymentMethod: payment,
-    };
-    addCard(newCard);
-    setCards((prev) => [...prev, newCard]);
-    setSelectedCardId(newCard.id);
-    setAddingNew(false);
-    setSuccess(true)
-    cardSelected(true)
+  
+    function isValidCardNumber(cardNumber) {
+      const digits = cardNumber.replace(/\D/g, "").split("").reverse().map(Number);
+      let sum = 0;
+  
+      for (let i = 0; i < digits.length; i++) {
+        let digit = digits[i];
+        if (i % 2 !== 0) {
+          digit *= 2;
+          if (digit > 9) digit -= 9;
+        }
+        sum += digit;
+      }
+  
+      return sum % 10 === 0;
+    }
+
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  // Validação de número de cartão
+  if (!isValidCardNumber(cardNumber)) {
+    setCardError("Número de cartão inválido");
+    return;
+  }
+
+  if (!isValidExpiryDate(expiryDate)) {
+  setCardError("Data de validade inválida. Escolha uma data futura.");
+  return;
+  }
+
+
+  // Validação extra opcional (ex: nome, validade, CVV)
+  if (!cardName || !expiryDate || !cvv) {
+    setCardError("Preencha todos os campos do cartão");
+    return;
+  }
+
+  setCardError("");
+
+  const newCard = {
+    id: cards.length > 0 ? Math.max(...cards.map((c) => c.id)) + 1 : 1,
+    cardNumber,
+    cardName,
+    expiryDate,
+    cvv,
+    paymentMethod: payment,
   };
+
+  addCard(newCard);
+  setCards((prev) => [...prev, newCard]);
+  setSelectedCardId(newCard.id);
+  setAddingNew(false);
+  setSuccess(true);
+  cardSelected(true);
+
+  console.log("Cartão válido e salvo com sucesso!");
+};
+
+const handleCardNameChange = (e) => {
+  const value = e.target.value;
+  // Permitir apenas letras, espaços e alguns símbolos básicos
+  const sanitized = value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
+  setCardName(sanitized);
+};
+
+
+  const handleCardChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ""); // Permite só números
+    setCardNumber(value);
+  };
+
+  const today = new Date();
+  const currentMonth = today.toISOString().slice(0, 7);  // Formato: "2025-06"
+
+
+  const handleRemoveCard = (id) => {
+    removeCard(id); // Remove do contexto + localStorage
+    setCards((prev) => prev.filter((c) => c.id !== id)); // Atualiza o state local
+
+    // Se o cartão removido era o selecionado, limpa a seleção
+    if (selectedCardId === id) {
+      setSelectedCardId(null);
+      cardSelected(false);
+    }
+
+    // Se não sobrou mais nenhum, forçar abertura do formulário
+    if (cards.length === 1) {
+      setAddingNew(true);
+    }
+  };
+
+  function isValidExpiryDate(expiryDate) {
+  if (!expiryDate) return false;
+
+  const today = new Date();
+  const [year, month] = expiryDate.split("-").map(Number);
+
+  const cardDate = new Date(year, month - 1); // JS conta mês de 0 a 11
+  const currentDate = new Date(today.getFullYear(), today.getMonth());
+
+  return cardDate >= currentDate;
+}
+
+  
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -86,12 +177,21 @@ const Card = ({cardSelected}) => {
                     <strong>Validade:</strong> {c.expiryDate}
                   </p>
                 </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCard(c.id)}
+                      className="ml-auto text-red-500 text-sm hover:underline"
+                    >
+                      Remover
+                    </button>
               </label>
             ))}
           </div>
           <button
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 cursor-pointer w-full"
-            onClick={() => setAddingNew(true)}
+            onClick={() => {
+              setSuccess(false);
+              setAddingNew(true)}}
           >
             Adicionar novo cartão
           </button>
@@ -122,23 +222,34 @@ const Card = ({cardSelected}) => {
           </div>
 
           {(payment === "credit" || payment === "debit") && (
-            <>
-              {success && (
-                <div className="bg-green-200 w-full text-green-500 py-2 rounded-lg text-center">
-                  {successMessage}
-                </div>
-              )}
+            <>    
+            {cardError && (
+              <div className="bg-red-200 w-full text-red-500 py-2 rounded-lg text-center mb-2">
+                {cardError}
+              </div>
+            )}
+
+            {success && (
+              <div>
+                {console.log({successMessage})}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <Label htmlFor="cardNumber">Número do Cartão</Label>
                   <input
                     id="cardNumber"
                     name="cardNumber"
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={16}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="0000 0000 0000 0000"
                     value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
+                    onChange={handleCardChange}
+                    required
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -150,7 +261,9 @@ const Card = ({cardSelected}) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="Nome conforme no cartão"
                     value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
+                    onChange={handleCardNameChange}
+                    maxLength={26}
+                    required
                   />
                 </div>
                 <div>
@@ -162,7 +275,9 @@ const Card = ({cardSelected}) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="MM/AA"
                     value={expiryDate}
+                    min={currentMonth}
                     onChange={(e) => setExpiryDate(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -170,20 +285,25 @@ const Card = ({cardSelected}) => {
                   <input
                     id="cvv"
                     name="cvv"
-                    type="number"
+                    type="text"
+                    maxLength={4}
+                    inputMode="numeric"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
                     placeholder="123"
                     value={cvv}
-                    onChange={(e) => setCvv(e.target.value)}
+                    onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
+                    required
                   />
+
                 </div>
               </div>
               <button
-                onClick={saveCard}
+                type="submit"
                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 cursor-pointer"
               >
                 Salvar Cartão
               </button>
+            </form>
             </>
           )}
 
