@@ -26,7 +26,7 @@ const CardManagement = () => {
         if (data.length === 0) {
           setShowAddForm(true);
         }
-      } catch (err) {
+      } catch (_err) {
         setError('Não foi possível carregar seus cartões.');
       } finally {
         setLoading(false);
