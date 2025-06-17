@@ -103,7 +103,7 @@ const ProductDetailPage = () => {
             
             {/* Imagem do Produto */}
             <div className="rounded-lg shadow-md bg-white p-4">
-              <img src={`/img/products/${product.image}`} alt={product.name} className="w-full h-auto rounded-md object-contain" style={{maxHeight: '500px'}}/>
+              <img src={`http://localhost:3000${product.image}`} alt={product.name} className="w-full h-auto rounded-md object-contain" style={{maxHeight: '500px'}}/>
             </div>
 
             {/* Detalhes do Produto */}
@@ -163,9 +163,22 @@ const ProductDetailPage = () => {
 
           {/* Produtos Relacionados */}
           {relatedProducts.length > 0 && (
-            <section className="py-12 border-t">
+            <section className="py-12 border-t border-gray-200">
               <h2 className="text-2xl font-bold mb-4">Produtos relacionados</h2>
-              <Swiper /* ... */ >
+              <Swiper spaceBetween={20}
+                slidesPerView={1}
+                loop={true}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 2,
+                  },
+                  800: {
+                    slidesPerView: 3,
+                  },
+                  1080: {
+                    slidesPerView: 4,
+                  },
+                }} >
                 {relatedProducts.map((p) => (
                   <SwiperSlide key={p._id}><ProductCard product={p} /></SwiperSlide>
                 ))}

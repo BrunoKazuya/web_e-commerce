@@ -61,7 +61,6 @@ const ProfileForm = () => {
       setApiFeedback({ error: error.message || 'Falha ao atualizar o perfil.' });
     }
   };
-  console.log(user)
   return (
     <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4">
       {apiFeedback.error && <div className="bg-red-100 text-red-700 p-3 rounded-md text-center">{apiFeedback.error}</div>}

@@ -4,45 +4,45 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InputMask from 'react-input-mask';
 
+function isValidCardNumber(cardNumber) {
+  const digits = cardNumber.replace(/\D/g, "").split("").reverse().map(Number);
+  if (digits.length === 0) return false;
+
+  let sum = 0;
+  for (let i = 0; i < digits.length; i++) {
+    let digit = digits[i];
+    if (i % 2 !== 0) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+  }
+  return sum % 10 === 0;
+}
 
 const currentYear = new Date().getFullYear();
 // 1. Adicionamos a validação para o CVV no schema
 const cardSchema = z.object({
-  cardholderName: z.string().min(3, 'Nome inválido.'),
-   cardNumber: z.preprocess(
-    // 1. Primeiro, limpa o valor, removendo tudo que não for dígito
-    (val) => String(val).replace(/\D/g, ''),
-    
-    // 2. Em seguida, aplica as regras na string de dígitos puros
-    z.string()
-     .length(16, { message: "O número do cartão deve ter 16 dígitos." })
-     .regex(/^[0-9]+$/, { message: "Apenas números são permitidos." }) // Garante que são apenas números
-  ),
-  cvv: z.string().min(3, 'CVV inválido.').max(4, 'CVV inválido.'),
+  cardholderName: z.string().min(3, 'Nome no cartão é obrigatório.'),
   
-  // Validações individuais primeiro
-  expMonth: z.coerce.number()
-    .min(1, 'Mês inválido.')
-    .max(12, 'Mês inválido.'),
-    
-  expYear: z.coerce.number()
-    .min(currentYear, 'Cartão expirado.') // Não pode ser um ano passado
-    .max(currentYear + 15, 'Ano muito no futuro.'), // Limita a 15 anos no futuro
-
+  cardNumber: z.preprocess(
+    (val) => String(val).replace(/\D/g, ''), // Limpa a máscara, deixando só os números
+    z.string()
+     .min(13, { message: "Número de cartão muito curto."})
+     .max(19, { message: "Número de cartão muito longo."})
+     .refine(isValidCardNumber, { message: "Número de cartão inválido." }) // <-- AQUI USAMOS SUA FUNÇÃO!
+  ),
+  
+  cvv: z.string().min(3, 'CVV inválido.').max(4, 'CVV inválido.'),
+  expMonth: z.coerce.number().min(1, 'Mês inválido.').max(12, 'Mês inválido.'),
+  expYear: z.coerce.number().min(currentYear, 'Cartão expirado.').max(currentYear + 15, 'Ano muito no futuro.'),
 }).refine((data) => {
-  // 3. Validação combinada: só é executada se as validações acima passarem
-  // Se o ano de expiração for o ano atual...
   if (data.expYear === currentYear) {
-    // ...então o mês de expiração deve ser maior ou igual ao mês atual.
-    // getMonth() é 0-indexado (Janeiro=0), então adicionamos 1.
     return data.expMonth >= new Date().getMonth() + 1;
   }
-  // Se o ano de expiração for um ano futuro, está sempre válido.
   return true;
 }, {
-  // Se a validação do .refine() falhar, esta mensagem será exibida
   message: "Data de validade expirada.",
-  // A mensagem de erro aparecerá no campo do mês
   path: ["expMonth"], 
 });
 

@@ -40,6 +40,7 @@ const ProfilePage = () => {
         ]);
         setOrders(ordersData);
         setAddresses(addressesData);
+      // eslint-disable-next-line no-unused-vars
       } catch (err) {
         setError("Não foi possível carregar os dados do perfil.");
       } finally {
@@ -104,7 +105,8 @@ const ProfilePage = () => {
                   className={`flex items-center py-1 px-2 text-center cursor-pointer ${
                     tabs === "pedidos" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => setTabs("pedidos")}
+                  onClick={() => {setTabs("pedidos")
+                  }}
                 >
                   <Package className="h-4 w-4 mr-2" />
                   Pedidos
@@ -112,11 +114,12 @@ const ProfilePage = () => {
                 <Tabs.Trigger
                   value="addresses"
                   className={`flex items-center py-1 px-2 text-center cursor-pointer ${
-                    tabs === "endereço"
+                    tabs === "endereco"
                       ? "bg-white text-black"
                       : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => setTabs("endereço")}
+                  onClick={() => {setTabs("endereco")
+                  }}
                 >
                   <MapPin className="h-4 w-4 mr-2" />
                   Endereços
@@ -126,18 +129,20 @@ const ProfilePage = () => {
                   className={`flex items-center py-1 px-2 text-center cursor-pointer ${
                     tabs === "cartoes" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => setTabs("cartoes")}
+                  onClick={() => {setTabs("cartoes")
+                  }}
                 >
                   <CreditCard className="h-4 w-4 mr-2" /> Cartões
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value="security"
                   className={`flex items-center py-1 px-2 text-center cursor-pointer ${
-                    tabs === "segurança"
+                    tabs === "seguranca"
                       ? "bg-white text-black"
                       : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => setTabs("segurança")}
+                  onClick={() => {setTabs("seguranca")
+                  }}
                 >
                   <Lock className="h-4 w-4 mr-2" />
                   Segurança

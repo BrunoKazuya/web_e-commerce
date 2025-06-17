@@ -1,7 +1,7 @@
 const CategoryCard = ({category}) => {
   return (
     <a
-      href={`/produtos?category=${category.slug}`}
+      href={`/produtos?category=${category._id}`}
       className="w-full h-[250px] bg-center bg-no-repeat bg-cover flex justify-center items-center relative rounded-3xl py-0 px-2.5 scale-100 hover:scale-105 transition-all"
       style={{
         backgroundImage:
