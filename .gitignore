@@ -16,8 +16,6 @@ dist-ssr/
 /out/
 
 # Arquivos locais de ambiente
-.env
-.env.*.local
 
 # Cache e lockfiles de ferramentas
 .cache/
