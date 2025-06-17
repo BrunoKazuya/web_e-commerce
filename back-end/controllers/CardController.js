@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import Card from '../models/Card.js'; // Certifique-se que o caminho está correto
+import Card from '../models/card.js'; // Certifique-se que o caminho está correto
 
 const controller = {}
 // @desc    Adicionar um novo cartão para o usuário logado
