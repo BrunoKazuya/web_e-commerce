@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependências
+node_modules/
+
+# Artefatos de build
+/dist/
+dist-ssr/
+/build/
+/out/
+
+# Arquivos locais de ambiente
+.env
+.env.*.local
+
+# Cache e lockfiles de ferramentas
+.cache/
+.pnpm-debug.log*
+
+# Editor / IDE
+.vscode/
+.idea/
+/.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testes / cobertura
+/coverage/
