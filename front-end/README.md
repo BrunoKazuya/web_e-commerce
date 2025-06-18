@@ -129,3 +129,59 @@ Sempre que o usuário faz login, adiciona itens ao carrinho ou edita seu perfil,
 |Filtro de produtos | É possível filtrar os produtos por categoria, nome e preço |
 
 
+## 5 • Testes de erro
+| Nº | Módulo           | Caso de Teste                          | Descrição                                                 | Resultado Esperado                                                |
+| -- | ---------------- | -------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1  | Registro Usuário | Cadastro com dados válidos             | Preencher todos os campos obrigatórios e enviar           | Usuário cadastrado com sucesso                                    |
+| 2  | Registro Usuário | Cadastro com e-mail já existente       | Tentar cadastrar com e-mail já usado                      | Exibir mensagem "Email já cadastrado"                             |
+| 3  | Registro Usuário | Cadastro com telefone inválido         | Número fora do formato (xx)xxxxxxxxx com 10 ou 11 dígitos | Exibir mensagem "Telefone inválido, precisa de 10 ou 11 dígitos"  |
+| 4  | Registro Usuário | Cadastro com data de nascimento futura | Informar data futura                                      | Exibir mensagem "Data de nascimento inválida"                     |
+| 5  | Registro Usuário | Cadastro com idade > 200               | Informar data de nascimento com mais de 200 anos          | Exibir mensagem "Idade inválida"                                  |
+| 6  | Registro Usuário | Cadastro com peso inumano              | Exemplo: peso > 300kg ou <= 0kg                           | Exibir mensagem "Peso inválido"                                   |
+| 7  | Registro Usuário | Cadastro com endereço sem número       | Deixar campo número vazio                                 | Exibir mensagem "Número obrigatório"                              |
+| 8  | Registro Usuário | Cadastro com CEP inválido              | CEP fora do formato ou inexistente                        | Exibir mensagem "CEP inválido"                                    |
+| 9  | Login            | Login com credenciais válidas          | Informar e-mail e senha corretos                          | Login bem-sucedido                                                |
+| 10 | Login            | Login com senha errada                 | Senha incorreta                                           | Exibir mensagem "E-mail ou senha inválidos"                       |
+| 11 | Login            | Login com e-mail inválido              | E-mail fora do formato                                    | Exibir mensagem "E-mail inválido"                                 |
+| 12 | Produtos         | Listagem de produtos                   | Acessar página inicial                                    | Produtos carregados                                               |
+| 13 | Produtos         | Filtro por categoria                   | Selecionar uma categoria                                  | Produtos da categoria aparecem                                    |
+| 14 | Produtos         | Buscar produto existente               | Buscar por nome válido                                    | Produto aparece                                                   |
+| 15 | Produtos         | Buscar produto inexistente             | Buscar termo que não existe                               | Exibir mensagem "Nenhum produto encontrado"                       |
+| 16 | Produtos         | Buscar por tag correta                 | Buscar por tag válida                                     | Produtos com a tag aparecem                                       |
+| 17 | Produtos         | Buscar por tag inexistente             | Buscar por tag inválida                                   | Exibir mensagem "Nenhum produto encontrado"                       |
+| 18 | Carrinho         | Adicionar item ao carrinho             | Clicar em "Adicionar"                                     | Produto adicionado                                                |
+| 19 | Carrinho         | Adicionar quantidade negativa          | Inserir quantidade negativa                               | Não permitir adicionar quantidade negativa                        |
+| 20 | Carrinho         | Adicionar além do estoque              | Inserir quantidade maior que o estoque disponível         | Não permitir quantidade acima do estoque                          |
+| 21 | Carrinho         | Remover item                           | Clicar em "Remover"                                       | Item removido                                                     |
+| 22 | Carrinho         | Atualizar quantidade                   | Alterar quantidade de um item                             | Total recalculado                                                 |
+| 23 | Endereço         | Adicionar endereço válido              | Preencher CEP, número, complemento                        | Endereço salvo                                                    |
+| 24 | Endereço         | Adicionar CEP inválido                 | CEP inexistente ou formato inválido                       | Exibir mensagem "CEP não encontrado"                              |
+| 25 | Endereço         | Remover endereço                       | Clicar em "Remover"                                       | Endereço deletado                                                 |
+| 26 | Pagamento        | Adicionar cartão válido                | Preencher dados corretos (passar no Luhn)                 | Cartão salvo                                                      |
+| 27 | Pagamento        | Adicionar cartão com letras            | Inserir letras no campo número                            | Não permitir letras                                               |
+| 28 | Pagamento        | Adicionar cartão inválido (Luhn)       | Número que não passa na validação de Luhn                 | Exibir mensagem "Número de cartão inválido"                       |
+| 29 | Pagamento        | Data de expiração no passado           | Data anterior à data atual                                | Exibir mensagem "Cartão expirado"                                 |
+| 30 | Pagamento        | Data de expiração muito no futuro      | Mais de 15 anos no futuro                                 | Exibir mensagem "Ano muito no futuro"                             |
+| 31 | Pagamento        | Mês inválido na validade               | Mês maior que 12 ou menor que 1                           | Exibir mensagem "Mês inválido"                                    |
+| 32 | Pagamento        | CVV inválido                           | Menos de 3 ou mais de 4 dígitos                           | Exibir mensagem "CVV inválido"                                    |
+| 33 | Pagamento        | Remover cartão                         | Clicar em "Remover"                                       | Cartão removido                                                   |
+| 34 | Pedido           | Finalizar pedido                       | Escolher endereço e cartão                                | Pedido criado                                                     |
+| 35 | Pedido           | Ver histórico de pedidos               | Ir em "Meus Pedidos"                                      | Listagem de pedidos                                               |
+| 36 | Upload Imagem    | Upload de imagem                       | Fazer upload via admin                                    | Imagem salva                                                      |
+| 37 | API              | GET /api/products                      | Testar rota GET                                           | Resposta JSON com lista de produtos                               |
+| 38 | API              | POST /api/users/login                  | Fazer POST com credenciais válidas                        | Token JWT recebido                                                |
+| 39 | API              | CORS na porta 5173                     | Acessar front-end conectado ao back-end                   | Sem erro CORS                                                     |
+| 40 | Integração       | Fluxo completo                         | Cadastro → Login → Compra                                 | Fluxo sem falha                                                   |
+| 41 | Admin            | Adicionar produto                      | Nome, preço, quantidade, categoria, descrição, imagem     | Produto adicionado                                                |
+| 42 | Admin            | Remover produto                        | Clicar em remover                                         | Produto deletado                                                  |
+| 43 | Admin            | Editar produto                         | Alterar informações                                       | Produto atualizado                                                |
+| 44 | Admin            | Preço negativo                         | Tentar cadastrar preço <= 0                               | Exibir mensagem "O preço deve ser maior que R\$ 0,00"             |
+| 45 | Admin            | Quantidade negativa                    | Tentar cadastrar quantidade negativa                      | Exibir mensagem "O estoque não pode ser negativo"                 |
+| 46 | Admin            | Descrição com menos de 10 caracteres   | Inserir descrição curta                                   | Exibir mensagem "A descrição precisa ter no mínimo 10 caracteres" |
+| 47 | Admin            | Categoria em branco                    | Não selecionar categoria                                  | Exibir mensagem "Você deve selecionar uma categoria"              |
+| 48 | Admin            | Imagem do produto ausente              | Não enviar imagem                                         | Exibir mensagem "A imagem do produto é obrigatória"               |
+| 49 | Admin            | Adicionar cliente                      | Preencher formulário                                      | Cliente adicionado                                                |
+| 50 | Admin            | Remover cliente                        | Clicar em remover                                         | Cliente removido                                                  |
+| 51 | Admin            | Editar cliente                         | Alterar dados                                             | Cliente atualizado                                                |
+| 52 | Admin            | Adicionar admin                        | Preencher dados admin                                     | Admin criado                                                      |
+| 53 | Admin            | Remover admin                          | Remover admin                                             | Admin removido                                                    |
