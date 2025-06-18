@@ -1,77 +1,78 @@
 // src/contexts/AuthContext.jsx
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import apiClient from '../utils/apiClient';
-import Loading from '../components/ui/Loading'; // Supondo que você tenha um componente de loading
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'; // Imports React hooks.
+import apiClient from '../utils/apiClient'; // Imports a pre-configured API client.
+import Loading from '../components/ui/Loading'; // Imports a loading spinner component.
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(null); // Creates a new context for authentication.
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [status, setStatus] = useState('loading'); // loading | authenticated | unauthenticated
+export function AuthProvider({ children }) { // Defines the AuthProvider component that will wrap the application.
+  const [user, setUser] = useState(null); // State to hold the authenticated user's data.
+  const [status, setStatus] = useState('loading'); // State to track the authentication status: 'loading', 'authenticated', or 'unauthenticated'.
 
-  // Esta função verifica se o usuário tem uma sessão ativa no back-end
-  const checkUserStatus = useCallback(async () => {
+  // This function checks if the user has an active session on the backend.
+  const checkUserStatus = useCallback(async () => { // useCallback to memoize the function.
     try {
-      // A rota /profile é protegida. Se funcionar, o cookie é válido.
-      const userData = await apiClient('/users/profile');
-      setUser(userData);
-      setStatus('authenticated');
-    } catch (error) {
-      // Se der erro 401, é o esperado para um usuário deslogado.
-      // Tratamos o erro definindo o estado como não autenticado.
-      setUser(null);
-      setStatus('unauthenticated');
+      // The /profile route is protected. If it works, the cookie is valid.
+      const userData = await apiClient('/users/profile'); // Tries to fetch the user profile.
+      setUser(userData); // If successful, sets the user data.
+      setStatus('authenticated'); // Sets the status to authenticated.
+    // eslint-disable-next-line no-unused-vars
+    } catch (error) { // Catches any error, e.g., a 401 Unauthorized if not logged in.
+      // A 401 error is expected for a logged-out user.
+      // We handle the error by setting the state to unauthenticated.
+      setUser(null); // Clears any user data.
+      setStatus('unauthenticated'); // Sets the status to unauthenticated.
     }
-  }, []);
+  }, []); // Empty dependency array means this function is created only once.
 
-  // Roda a verificação uma vez quando a aplicação carrega
-  useEffect(() => {
+  // Runs the check once when the application loads.
+  useEffect(() => { // Effect hook to run the check on initial component mount.
     checkUserStatus();
-  }, [checkUserStatus]);
+  }, [checkUserStatus]); // Depends on the memoized checkUserStatus function.
 
-  // Função de Login
+  // Login function.
   const login = async (email, password) => {
     try {
-      const userData = await apiClient('/users/login', {
+      const userData = await apiClient('/users/login', { // Makes a POST request to the login endpoint.
         method: 'POST',
         body: { email, password },
       });
-      setUser(userData);
-      setStatus('authenticated');
-      return { success: true };
+      setUser(userData); // Sets the user data on successful login.
+      setStatus('authenticated'); // Updates the status.
+      return { success: true }; // Returns a success object.
     } catch (error) {
-      return { success: false, message: error.message };
+      return { success: false, message: error.message }; // Returns a failure object with the error message.
     }
   };
   
-  // Função de Registro
+  // Register function.
   const register = async (name, email, password, phone) => {
     try {
-      const userData = await apiClient('/users/register', {
+      const userData = await apiClient('/users/register', { // Makes a POST request to the register endpoint.
         method: 'POST',
         body: { name, email, password, phone },
       });
-      // Após registrar, o back-end já nos loga, então atualizamos o estado
-      setUser(userData);
-      setStatus('authenticated');
-      return { success: true };
+      // After registering, the backend logs us in, so we update the state.
+      setUser(userData); // Sets the user data.
+      setStatus('authenticated'); // Updates the status.
+      return { success: true }; // Returns a success object.
     } catch(error) {
-      return { success: false, message: error.message };
+      return { success: false, message: error.message }; // Returns a failure object.
     }
   }
 
-  // Função de Logout
+  // Logout function.
   const logout = async () => {
     try {
-      await apiClient('/users/logout', { method: 'POST' });
-    } finally {
-      setUser(null);
-      setStatus('unauthenticated');
+      await apiClient('/users/logout', { method: 'POST' }); // Calls the logout endpoint.
+    } finally { // The finally block ensures this code runs whether the try succeeds or fails.
+      setUser(null); // Clears the user data.
+      setStatus('unauthenticated'); // Sets the status to unauthenticated.
     }
   };
 
-  const value = {
+  const value = { // The value object that will be provided by the context.
     user,
     setUser,
     isLoggedIn: status === 'authenticated',
@@ -82,23 +83,24 @@ export function AuthProvider({ children }) {
     logout,
   };
   
-  // Mostra um loading geral enquanto a sessão inicial é verificada
-  if (status === 'loading') {
-    return <Loading size="lg" />;
+  // Shows a general loading indicator while the initial session is being checked.
+  if (status === 'loading') { // While the initial check is running...
+    return <Loading size="lg" />; // Show a full-page loading indicator.
   }
 
-  return (
+  return ( // Once the status is determined, render the provider.
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook customizado para facilitar o uso do contexto
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === null) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+// Custom hook to facilitate the use of the context.
+// eslint-disable-next-line react-refresh/only-export-components
+export function useAuth() { // Defines the custom useAuth hook.
+  const context = useContext(AuthContext); // Gets the context value.
+  if (context === null) { // If the hook is used outside of an AuthProvider...
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider'); // Throw an error.
   }
-  return context;
+  return context; // Otherwise, return the context value.
 }

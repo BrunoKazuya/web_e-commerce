@@ -1,62 +1,61 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import apiClient from "../utils/apiClient";
+import { createContext, useContext, useState, useEffect, useCallback } from "react"; // Imports React hooks.
+import apiClient from "../utils/apiClient"; // Imports a pre-configured API client.
 
-const ProductContext = createContext(null);
+const ProductContext = createContext(null); // Creates a new context for product management.
 
-export function ProductProvider({ children }) {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [status, setStatus] = useState('idle');
+export function ProductProvider({ children }) { // Defines the ProductProvider component.
+  const [products, setProducts] = useState([]); // State to hold the list of products.
+  const [categories, setCategories] = useState([]); // State to hold the list of categories.
+  const [status, setStatus] = useState('idle'); // State to track the loading status of products.
 
-  // A MUDANÇA ESTÁ AQUI: o array de dependências do useCallback está vazio.
-  // Isso garante que a função fetchProducts seja criada apenas UMA VEZ.
-  const fetchProducts = useCallback(async () => {
-    setStatus('loading');
+  // The CHANGE IS HERE: the useCallback dependency array is empty.
+  // This ensures the fetchProducts function is created only ONCE.
+  const fetchProducts = useCallback(async () => { // Defines a memoized function to fetch products.
+    setStatus('loading'); // Sets status to loading before the API call.
     try {
-      const productsData = await apiClient('/products');
-      setProducts(productsData);
-      setStatus('success');
+      const productsData = await apiClient('/products'); // Fetches product data.
+      setProducts(productsData); // Sets the product data into state.
+      setStatus('success'); // Sets status to success after the call.
     } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-      setStatus('error');
+      console.error("Erro ao buscar produtos:", error); // Logs any error.
+      setStatus('error'); // Sets status to error if the call fails.
     }
-  }, []); // <--- ARRAY DE DEPENDÊNCIAS VAZIO
+  }, []); // <--- EMPTY DEPENDENCY ARRAY makes this function stable.
 
-  // A mesma mudança é aplicada aqui para fetchCategories.
-  const fetchCategories = useCallback(async () => {
+  // The same change is applied here for fetchCategories.
+  const fetchCategories = useCallback(async () => { // Defines a memoized function to fetch categories.
     try {
-      const categoriesData = await apiClient('/categories');
-      setCategories(categoriesData);
+      const categoriesData = await apiClient('/categories'); // Fetches category data.
+      setCategories(categoriesData); // Sets the category data into state.
     } catch (error) {
-      console.error("Erro ao buscar categorias:", error);
+      console.error("Erro ao buscar categorias:", error); // Logs any error.
     }
-  }, []); // <--- ARRAY DE DEPENDÊNCIAS VAZIO
+  }, []); // <--- EMPTY DEPENDENCY ARRAY makes this function stable.
 
-  // Este useEffect agora está seguro. Como as funções no array de dependências
-  // são estáveis (criadas apenas uma vez), este efeito também rodará apenas uma vez.
+  // This useEffect is now safe. Since the functions in the dependency array
+  // are stable (created only once), this effect will also run only once.
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-  }, [fetchProducts, fetchCategories]);
+  }, [fetchProducts, fetchCategories]); // Depends on the stable fetch functions.
 
-  // --- O resto do seu contexto continua igual ---
-
-  const addProduct = async (productData) => {
-    await apiClient('/products', { method: 'POST', body: productData });
-    await fetchProducts();
+  // CRUD operations
+  const addProduct = async (productData) => { // Function to add a new product.
+    await apiClient('/products', { method: 'POST', body: productData }); // Calls the API to create a product.
+    await fetchProducts(); // Refetches the product list to include the new one.
   };
 
-  const updateProduct = async (id, productData) => {
-    await apiClient(`/products/${id}`, { method: 'PUT', body: productData });
-    await fetchProducts();
+  const updateProduct = async (id, productData) => { // Function to update an existing product.
+    await apiClient(`/products/${id}`, { method: 'PUT', body: productData }); // Calls the API to update a product.
+    await fetchProducts(); // Refetches the product list to show the changes.
   };
   
-  const removeProduct = async (id) => {
-    await apiClient(`/products/${id}`, { method: 'DELETE' });
-    await fetchProducts();
+  const removeProduct = async (id) => { // Function to remove a product.
+    await apiClient(`/products/${id}`, { method: 'DELETE' }); // Calls the API to delete a product.
+    await fetchProducts(); // Refetches the product list to remove the deleted one.
   };
 
-  const value = {
+  const value = { // The value object provided by the context.
     products,
     categories,
     status,
@@ -65,17 +64,18 @@ export function ProductProvider({ children }) {
     removeProduct,
   };
 
-  return (
+  return ( // Renders the provider with the value.
     <ProductContext.Provider value={value}>
       {children}
     </ProductContext.Provider>
   );
 }
 
-export function useProduct() {
-  const context = useContext(ProductContext);
-  if (context === null) {
-    throw new Error('useProduct deve ser usado dentro de um ProductProvider');
+// eslint-disable-next-line react-refresh/only-export-components
+export function useProduct() { // Defines the custom useProduct hook.
+  const context = useContext(ProductContext); // Gets the context value.
+  if (context === null) { // If used outside a provider...
+    throw new Error('useProduct deve ser usado dentro de um ProductProvider'); // Throw an error.
   }
-  return context;
+  return context; // Returns the context value.
 }

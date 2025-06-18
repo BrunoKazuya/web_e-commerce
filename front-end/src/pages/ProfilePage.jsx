@@ -1,24 +1,23 @@
-import * as Tabs from "@radix-ui/react-tabs";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { Package, MapPin, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
-import { ShoppingCart, CreditCard } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useUser } from "../contexts/UserContext";
-import OrderCard from "../components/profile/OrderCard";
-import AddressForm from "../components/profile/AddressForm";
-import AddressCard from "../components/profile/AddressCard";
-import ChangePasswordForm from "../components/profile/ChangePasswordForm";
-import ProfileForm from "../components/profile/ProfileForm";
-import Loading from "../components/ui/Loading";
-import { useAuth } from "../contexts/AuthContext";
-import CardManagement from "../components/profile/CardManagement";
+import * as Tabs from "@radix-ui/react-tabs"; // Imports Radix UI Tabs components.
+import Navbar from "../components/Navbar"; // Imports the Navbar component.
+import Footer from "../components/Footer"; // Imports the Footer component.
+import { Package, MapPin, Lock, ShoppingCart, CreditCard } from "lucide-react"; // Imports icons.
+import { useEffect, useState } from "react"; // Imports React hooks.
+import { Link } from "react-router-dom"; // Imports Link for navigation.
+import { useUser } from "../contexts/UserContext"; // Imports the user context hook.
+import OrderCard from "../components/profile/OrderCard"; // Imports the component for displaying a single order.
+import AddressCard from "../components/profile/AddressCard"; // Imports the component for displaying a single address.
+import AddressForm from "../components/profile/AddressForm"; // Imports the form for adding/editing an address.
+import ChangePasswordForm from "../components/profile/ChangePasswordForm"; // Imports the password change form.
+import ProfileForm from "../components/profile/ProfileForm"; // Imports the profile info form.
+import Loading from "../components/ui/Loading"; // Imports the loading spinner.
+import { useAuth } from "../contexts/AuthContext"; // Imports the auth context hook.
+import CardManagement from "../components/profile/CardManagement"; // Imports the component for managing credit cards.
 
-const ProfilePage = () => {
-  const [tabs, setTabs] = useState("pedidos");
-  const { user } = useAuth();
-  const {
+const ProfilePage = () => { // Defines the ProfilePage component.
+  const [tabs, setTabs] = useState("pedidos"); // State to manage the currently active tab.
+  const { user } = useAuth(); // Gets the current user from the auth context.
+  const { // Destructures API functions from the user context.
     getMyOrders,
     getMyAddresses,
     addAddress,
@@ -26,15 +25,15 @@ const ProfilePage = () => {
     updateAddress,
   } = useUser();
 
-  const [orders, setOrders] = useState([]);
-  const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [orders, setOrders] = useState([]); // State for the user's orders.
+  const [addresses, setAddresses] = useState([]); // State for the user's addresses.
+  const [loading, setLoading] = useState(true); // State to manage loading status.
+  const [error, setError] = useState(""); // State to hold any error message.
 
-  useEffect(() => {
+  useEffect(() => { // Effect to load initial profile data.
     const loadData = async () => {
       try {
-        const [ordersData, addressesData] = await Promise.all([
+        const [ordersData, addressesData] = await Promise.all([ // Fetches orders and addresses in parallel.
           getMyOrders(),
           getMyAddresses(),
         ]);
@@ -48,41 +47,41 @@ const ProfilePage = () => {
       }
     };
     loadData();
-  }, [getMyOrders, getMyAddresses]);
+  }, [getMyOrders, getMyAddresses]); // Dependency array.
 
-  const handleAddAddress = async (formData) => {
+  const handleAddAddress = async (formData) => { // Function to handle adding a new address.
     try {
       const newAddress = await addAddress(formData);
-      setAddresses((prev) => [...prev, newAddress]);
+      setAddresses((prev) => [...prev, newAddress]); // Adds the new address to the state.
     } catch (err) {
       alert(`Erro: ${err.message}`);
     }
   };
 
-  const handleRemoveAddress = async (id) => {
+  const handleRemoveAddress = async (id) => { // Function to handle removing an address.
     if (window.confirm("Tem certeza?")) {
       try {
         await removeAddress(id);
-        setAddresses((prev) => prev.filter((a) => a._id !== id));
+        setAddresses((prev) => prev.filter((a) => a._id !== id)); // Filters out the removed address from the state.
       } catch (err) {
         alert(`Erro: ${err.message}`);
       }
     }
   };
 
-  const handleUpdateAddress = async (id, formData) => {
+  const handleUpdateAddress = async (id, formData) => { // Function to handle updating an address.
     try {
       const updatedAddr = await updateAddress(id, formData);
-      setAddresses((prev) => prev.map((a) => (a._id === id ? updatedAddr : a)));
+      setAddresses((prev) => prev.map((a) => (a._id === id ? updatedAddr : a))); // Updates the specific address in the state.
     } catch (err) {
       alert(`Erro: ${err.message}`);
     }
   };
 
-  if (loading) return <Loading size="lg" />;
-  if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
+  if (loading) return <Loading size="lg" />; // Shows loading spinner while data is being fetched.
+  if (error) return <p className="text-center text-red-500 py-10">{error}</p>; // Shows an error message if fetching fails.
 
-  return (
+  return ( // Returns the JSX for the page.
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
@@ -98,63 +97,55 @@ const ProfilePage = () => {
               <ProfileForm user={user} />
             </div>
 
-            <Tabs.Root defaultValue="orders" className="mt-6">
-              <Tabs.List className="grid grid-cols-1 sm:grid-cols-4 mb-8 w-full bg-gray-100 rounded-lg p-1">
+            <Tabs.Root defaultValue="orders" className="mt-6"> {/* Main container for the tabbed interface. */}
+              <Tabs.List className="grid grid-cols-1 sm:grid-cols-4 mb-8 w-full bg-gray-100 rounded-lg p-1"> {/* List of tab triggers. */}
                 <Tabs.Trigger
                   value="orders"
-                  className={`flex items-center py-1 px-2 text-center cursor-pointer ${
+                  className={`flex items-center justify-center py-1 px-2 text-center cursor-pointer ${
                     tabs === "pedidos" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => {setTabs("pedidos")
-                  }}
+                  onClick={() => {setTabs("pedidos")}}
                 >
                   <Package className="h-4 w-4 mr-2" />
                   Pedidos
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value="addresses"
-                  className={`flex items-center py-1 px-2 text-center cursor-pointer ${
-                    tabs === "endereco"
-                      ? "bg-white text-black"
-                      : "text-gray-400"
+                  className={`flex items-center justify-center py-1 px-2 text-center cursor-pointer ${
+                    tabs === "endereco" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => {setTabs("endereco")
-                  }}
+                  onClick={() => {setTabs("endereco")}}
                 >
                   <MapPin className="h-4 w-4 mr-2" />
                   Endereços
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value="cards"
-                  className={`flex items-center py-1 px-2 text-center cursor-pointer ${
+                  className={`flex items-center justify-center py-1 px-2 text-center cursor-pointer ${
                     tabs === "cartoes" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => {setTabs("cartoes")
-                  }}
+                  onClick={() => {setTabs("cartoes")}}
                 >
                   <CreditCard className="h-4 w-4 mr-2" /> Cartões
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value="security"
-                  className={`flex items-center py-1 px-2 text-center cursor-pointer ${
-                    tabs === "seguranca"
-                      ? "bg-white text-black"
-                      : "text-gray-400"
+                  className={`flex items-center justify-center py-1 px-2 text-center cursor-pointer ${
+                    tabs === "seguranca" ? "bg-white text-black" : "text-gray-400"
                   } rounded-lg`}
-                  onClick={() => {setTabs("seguranca")
-                  }}
+                  onClick={() => {setTabs("seguranca")}}
                 >
                   <Lock className="h-4 w-4 mr-2" />
                   Segurança
                 </Tabs.Trigger>
               </Tabs.List>
 
-              <Tabs.Content value="orders">
+              <Tabs.Content value="orders"> {/* Content for the "Orders" tab. */}
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold mb-4">
                     Histórico de Pedidos
                   </h3>
-                  {orders.length === 0 && (
+                  {orders.length === 0 && ( // Renders a message if there are no orders.
                     <div className="bg-white p-12 rounded-lg shadow-md text-center">
                       <ShoppingCart className="h-16 w-16 mx-auto text-gray-400 mb-4" />
                       <h2 className="text-2xl font-semibold mb-2">
@@ -174,7 +165,7 @@ const ProfilePage = () => {
                 </div>
               </Tabs.Content>
 
-              <Tabs.Content value="addresses">
+              <Tabs.Content value="addresses"> {/* Content for the "Addresses" tab. */}
                 <div className="space-y-6">
                   <h3 className="text-xl font-semibold">Gerenciar Endereços</h3>
                   {addresses.map((address) => (
@@ -189,11 +180,11 @@ const ProfilePage = () => {
                 </div>
               </Tabs.Content>
 
-              <Tabs.Content value="cards">
+              <Tabs.Content value="cards"> {/* Content for the "Cards" tab. */}
                 <CardManagement />
               </Tabs.Content>
 
-              <Tabs.Content value="security">
+              <Tabs.Content value="security"> {/* Content for the "Security" tab. */}
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Alterar Senha</h3>
                   <ChangePasswordForm />

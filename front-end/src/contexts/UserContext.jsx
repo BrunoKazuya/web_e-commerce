@@ -1,56 +1,56 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import apiClient from "../utils/apiClient";
-import { useAuth } from "./AuthContext";
+import { createContext, useContext, useState, useEffect } from "react"; // Imports React hooks.
+import apiClient from "../utils/apiClient"; // Imports the API client.
+import { useAuth } from "./AuthContext"; // Imports the auth hook to check login status.
 
-const UserContext = createContext(null);
+const UserContext = createContext(null); // Creates a new context for user-related data and actions.
 
-export function UserProvider({ children }) {
-  const { isLoggedIn } = useAuth();
+export function UserProvider({ children }) { // Defines the UserProvider component.
+  const { isLoggedIn } = useAuth(); // Gets the login status from the AuthContext.
   
-  // O carrinho continua sendo gerenciado no cliente para uma melhor experiência.
-  // Ele é salvo no localStorage para não ser perdido ao recarregar a página.
-  const [cartItems, setCartItems] = useState(() => {
+  // The cart is still managed on the client-side for a better experience.
+  // It is saved to localStorage so it isn't lost on page reload.
+  const [cartItems, setCartItems] = useState(() => { // Initializes cart state from localStorage.
     try {
-      const savedCart = localStorage.getItem('cartItems');
-      return savedCart ? JSON.parse(savedCart) : [];
+      const savedCart = localStorage.getItem('cartItems'); // Tries to get the cart from localStorage.
+      return savedCart ? JSON.parse(savedCart) : []; // Parses it if it exists, otherwise returns an empty array.
     } catch (error) {
-      console.error("Erro ao ler carrinho do localStorage", error);
-      return [];
+      console.error("Erro ao ler carrinho do localStorage", error); // Logs an error if parsing fails.
+      return []; // Returns an empty array as a fallback.
     }
   });
   
-  useEffect(() => {
-    // Persiste o carrinho no localStorage sempre que ele for alterado.
+  useEffect(() => { // Effect to persist cart changes.
+    // Persists the cart to localStorage whenever it is changed.
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+  }, [cartItems]); // Runs whenever the cartItems state changes.
   
-  // Limpa o carrinho quando o usuário faz logout.
+  // Clears the cart when the user logs out.
   useEffect(() => {
-    if (!isLoggedIn) {
-      setCartItems([]);
-      localStorage.removeItem('cartItems');
+    if (!isLoggedIn) { // Checks if the user is no longer logged in.
+      setCartItems([]); // Clears the cart from the state.
+      localStorage.removeItem('cartItems'); // Removes the cart from localStorage.
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn]); // Runs whenever the isLoggedIn status changes.
 
-  // --- LÓGICA DO CARRINHO (CLIENT-SIDE) ---
+  // --- CART LOGIC (CLIENT-SIDE) ---
   const addCart = (product, quantity) => {
     setCartItems(prevItems => {
-      const exist = prevItems.find(item => item._id === product._id);
+      const exist = prevItems.find(item => item._id === product._id); // Checks if the item is already in the cart.
       if (exist) {
-        // Se o item já existe, atualiza a quantidade
+        // If the item exists, update its quantity.
         return prevItems.map(item =>
           item._id === product._id 
-          ? { ...item, quantity: Math.min(item.quantity + quantity, product.inStock) } 
+          ? { ...item, quantity: Math.min(item.quantity + quantity, product.inStock) } // Caps quantity at the available stock.
           : item
         );
       } else {
-        // Se é um item novo, adiciona ao carrinho
+        // If it's a new item, add it to the cart.
         return [...prevItems, { ...product, quantity }];
       }
     });
   };
 
-  const updateCart = (productId, quantity) => {
+  const updateCart = (productId, quantity) => { // Function to update the quantity of a specific item.
     setCartItems(prevItems =>
       prevItems.map(item =>
         item._id === productId ? { ...item, quantity: Number(quantity) } : item
@@ -58,16 +58,16 @@ export function UserProvider({ children }) {
     );
   };
   
-  const deleteCart = (productId) => {
+  const deleteCart = (productId) => { // Function to remove an item from the cart.
     setCartItems(prevItems => prevItems.filter(item => item._id !== productId));
   };
   
-  const clearCart = () => {
+  const clearCart = () => { // Function to completely clear the cart.
     setCartItems([]);
   }
 
-  // --- FUNÇÕES QUE CHAMAM A API (BACK-END) ---
-  // Note como elas são simples. Apenas chamam o apiClient.
+  // --- FUNCTIONS THAT CALL THE API (BACK-END) ---
+  // Note how simple they are. They just call the apiClient.
   
   const updateUserProfile = async (newUserData) => apiClient('/users/profile', {
     method: 'PUT',
@@ -90,21 +90,21 @@ export function UserProvider({ children }) {
   const addCard = async (cardData) => apiClient('/cards', { method: 'POST', body: cardData });
   const removeCard = async (id) => apiClient(`/cards/${id}`, { method: 'DELETE' });
 
-  // Funções de admin (exemplo)
+  // Admin functions (example)
   const getAllUsersAdmin = async () => apiClient('/users/admin/all');
   const deleteUserAdmin = async (id) => apiClient(`/users/admin/${id}`, { method: 'DELETE' });
 
 
-  const value = {
-    // Carrinho
+  const value = { // The comprehensive value object provided by the context.
+    // Cart
     cartItems,
     addCart,
     updateCart,
     deleteCart,
     clearCart,
-    cartQuantity: cartItems.length,
+    cartQuantity: cartItems.reduce((acc, item) => acc + item.quantity, 0),
 
-    // Ações da API
+    // API Actions
     updateUserProfile,
     getMyOrders,
     addOrder,
@@ -115,7 +115,7 @@ export function UserProvider({ children }) {
     getMyCards,
     addCard,
     removeCard,
-    // Funções de Admin
+    // Admin Functions
     getAllUsersAdmin,
     deleteUserAdmin
   };
@@ -127,9 +127,10 @@ export function UserProvider({ children }) {
   );
 }
 
-export function useUser() {
+// eslint-disable-next-line react-refresh/only-export-components
+export function useUser() { // Defines the custom useUser hook.
   const context = useContext(UserContext);
-  if (context === null) {
+  if (context === null) { // Checks if used outside a provider.
     throw new Error('useUser deve ser usado dentro de um UserProvider');
   }
   return context;

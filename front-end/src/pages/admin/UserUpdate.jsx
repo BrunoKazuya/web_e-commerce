@@ -1,29 +1,29 @@
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Mail, Phone, Shield } from "lucide-react";
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
-import Loading from "../../components/ui/Loading";
-import apiClient from "../../utils/apiClient";
-import UserRoleForm from "../../components/user/UserRoleForm"; // Importe o novo formulário
+import { Link, useParams, useNavigate } from "react-router-dom"; // Imports routing hooks.
+import { useEffect, useState } from "react"; // Imports React hooks.
+import { ArrowLeft, Mail, Phone, Shield } from "lucide-react"; // Imports icons.
+import Footer from "../../components/Footer"; // Imports the Footer component.
+import Navbar from "../../components/Navbar"; // Imports the Navbar component.
+import Loading from "../../components/ui/Loading"; // Imports the loading spinner.
+import apiClient from "../../utils/apiClient"; // Imports the API client.
+import UserRoleForm from "../../components/user/UserRoleForm"; // Imports the new form for role editing.
 
-const UserUpdate = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+const UserUpdate = () => { // Defines the component for updating a user.
+  const { id } = useParams(); // Gets the user ID from the URL.
+  const navigate = useNavigate(); // Initializes the navigate function.
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // State for the user data to be edited.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { // Effect to load the specific user's data.
     const loadUserData = async () => {
       if (!id) {
         navigate('/dashboard/usuarios');
         return;
       }
       try {
-        // Busca os dados do usuário específico pela rota de admin
+        // Fetches the specific user's data via the admin route.
         const userData = await apiClient(`/users/admin/${id}`);
         setUser(userData);
       } catch (err) {
@@ -34,13 +34,13 @@ const UserUpdate = () => {
       }
     };
     loadUserData();
-  }, [id, navigate]);
+  }, [id, navigate]); // Runs when 'id' changes.
 
-  const handleUpdateUserRole = async (formData) => {
+  const handleUpdateUserRole = async (formData) => { // Defines an async function to handle the role update.
     setError('');
     setIsSubmitting(true);
     try {
-      // Usa a rota de admin para atualizar o usuário
+      // Uses the admin route to update the user.
       await apiClient(`/users/admin/${id}`, { method: 'PUT', body: formData });
       alert('Tipo de usuário atualizado com sucesso!');
       navigate('/dashboard/usuarios');
@@ -55,7 +55,7 @@ const UserUpdate = () => {
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
   if (!user) return <p className="text-center py-10">Usuário não encontrado.</p>;
 
-  return (
+  return ( // Returns the JSX for the page.
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto px-6 sm:px-4 lg:px-2 py-16">
@@ -71,7 +71,7 @@ const UserUpdate = () => {
             <h1 className="text-2xl font-bold mb-2">Editando Usuário: {user.name}</h1>
             <p className="text-gray-600 mb-6">Altere o tipo de conta do usuário.</p>
             
-            {/* Seção de Informações Pessoais (somente leitura) */}
+            {/* Personal Information Section (read-only) */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg border">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 mr-3 text-gray-500" />
@@ -81,19 +81,19 @@ const UserUpdate = () => {
                 <Phone className="h-4 w-4 mr-3 text-gray-500" />
                 <span className="text-gray-800">{user.phone}</span>
               </div>
-               <div className="flex items-center">
+                <div className="flex items-center">
                 <Shield className="h-4 w-4 mr-3 text-gray-500" />
                 <span className="text-gray-800">Cadastrado em: {new Date(user.createdAt).toLocaleDateString('pt-BR')}</span>
               </div>
             </div>
 
-            {error && (
+            {error && ( // Displays any submission error.
               <div className="bg-red-100 text-red-700 p-3 rounded-md my-4 text-center">
                 {error}
               </div>
             )}
             
-            {/* Formulário focado apenas na edição do 'role' */}
+            {/* Form focused only on editing the 'role' */}
             <UserRoleForm
               currentUserRole={user.role}
               onFormSubmit={handleUpdateUserRole}

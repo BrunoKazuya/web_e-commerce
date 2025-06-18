@@ -1,29 +1,32 @@
 import mongoose from "mongoose";
 
-// Este é um schema para os itens DENTRO do pedido
+// Define a sub-schema for individual items within an order.
+// This schema will not create its own collection; it will be embedded in the OrderSchema.
 const OrderItemSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  quantity: { type: Number, required: true, min: 1 },
-  price: { type: Number, required: true }, // Preço no momento da compra
-  product: { // Referência ao produto original
+  name: { type: String, required: true }, // A snapshot of the product name at the time of purchase.
+  quantity: { type: Number, required: true, min: 1 }, // The quantity of this item purchased.
+  price: { type: Number, required: true }, // A snapshot of the price at the time of purchase.
+  image: { type: String, required: true }, // A snapshot of the product image.
+  product: { // A reference back to the original product document.
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
     required: true
   }
 });
 
-
+// Define the main schema for the Order collection.
 const OrderSchema = new mongoose.Schema({
-  user: { // Referência ao usuário que fez o pedido
+  // A reference to the user who placed the order.
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    index: true
+    index: true // An index improves performance when querying for a user's orders.
   },
-  // Array de itens do pedido, usando o schema definido acima
+  // An array of order items, using the schema defined above.
   orderItems: [OrderItemSchema],
   
-  // Endereço de entrega "congelado" no momento do pedido
+  // A snapshot of the shipping address used for this specific order.
   shippingAddress: {
     street: { type: String, required: true },
     number: { type: String, required: true },
@@ -33,23 +36,39 @@ const OrderSchema = new mongoose.Schema({
     state: { type: String, required: true, uppercase: true, length: 2 },
     cep: { type: String, required: true }
   },
-
-  // Preços
-  itemsPrice: { type: Number, required: true, default: 0.0 }, // Soma dos preços dos itens
-  totalPrice: { type: Number, required: true, default: 0.0 }, // Soma de tudo
   
-  // Status do pedido
+  // A nested object for payment information.
+  paymentInfo: {
+      gatewayPaymentMethodId: { type: String, required: true }, // The ID of the saved card/payment method.
+      status: { 
+          type: String, 
+          required: true,
+          enum: ['pending', 'paid', 'failed'], // Payment status must be one of these values.
+          default: 'pending'
+      }
+  },
+
+  // Price summary for the order.
+  itemsPrice: { type: Number, required: true, default: 0.0 }, // Sum of all item prices.
+  shippingPrice: { type: Number, required: true, default: 0.0 }, // Cost of shipping.
+  totalPrice: { type: Number, required: true, default: 0.0 }, // The final total cost.
+  
+  // Fulfillment status of the order.
   orderStatus: {
     type: String,
     enum: ['processing', 'shipped', 'delivered', 'cancelled'],
     default: 'processing',
-    index: true
+    index: true // An index improves performance when filtering orders by status.
   },
 
+  // Timestamps for specific order events.
+  paidAt: { type: Date },
+  deliveredAt: { type: Date },
+
 }, {
-  timestamps: true // Adiciona createdAt e updatedAt
+  timestamps: true // Automatically add 'createdAt' and 'updatedAt' fields.
 });
 
+// Create and export the Order model.
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
-
-export default Order
+export default Order;

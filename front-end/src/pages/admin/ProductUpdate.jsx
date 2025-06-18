@@ -1,37 +1,36 @@
-// src/pages/admin/ProductUpdate.jsx (Versão Corrigida)
+// src/pages/admin/ProductUpdate.jsx
 
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router-dom"; // Imports routing hooks.
+import { useEffect, useState } from "react"; // Imports React hooks.
+import { ArrowLeft } from "lucide-react"; // Imports an icon.
+import Footer from "../../components/Footer"; // Imports the Footer component.
+import Navbar from "../../components/Navbar"; // Imports the Navbar component.
+import Loading from "../../components/ui/Loading"; // Imports the loading spinner.
+import ProductForm from "../../components/product/ProductForm"; // Imports the reusable product form.
+import apiClient from "../../utils/apiClient"; // Imports the API client.
+import { useProduct } from "../../contexts/ProductContext"; // We need updateProduct from the context.
 
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
-import Loading from "../../components/ui/Loading";
-import ProductForm from "../../components/product/ProductForm";
-import apiClient from "../../utils/apiClient";
-import { useProduct } from "../../contexts/ProductContext"; // Precisamos do updateProduct do contexto
-
-const ProductUpdate = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  // Pegamos as categorias e a função de ATUALIZAÇÃO do nosso contexto global
+const ProductUpdate = () => { // Defines the component for updating a product.
+  const { id } = useParams(); // Gets the product ID from the URL.
+  const navigate = useNavigate(); // Initializes the navigate function.
+  // Gets the categories list and the UPDATE function from our global context.
   const { categories, updateProduct } = useProduct();
   
-  const [product, setProduct] = useState(null); // Inicia como null
+  const [product, setProduct] = useState(null); // Initializes as null.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Função para buscar os dados específicos deste produto
+    // Function to fetch the specific data for this product.
     const loadProductData = async () => {
-      if (!id) {
+      if (!id) { // Redirects if there is no ID.
         navigate('/dashboard/produtos');
         return;
       }
       try {
-        const productData = await apiClient(`/products/${id}`);
-        setProduct(productData);
+        const productData = await apiClient(`/products/${id}`); // Fetches the product by its ID.
+        setProduct(productData); // Sets the fetched data to state.
       } catch (err) {
         setError("Não foi possível carregar o produto para edição.");
         console.error(err);
@@ -40,38 +39,37 @@ const ProductUpdate = () => {
       }
     };
     loadProductData();
-  }, [id, navigate]);
+  }, [id, navigate]); // Runs when 'id' changes.
 
-  // Função que será passada para o formulário
+  // Function that will be passed to the form.
   const handleUpdateProduct = async (formData) => {
     setError('');
     setIsSubmitting(true);
-    console.log("oi")
     try {
-      // Chama a função 'updateProduct' do CONTEXTO.
-      // O contexto fará a chamada à API e depois re-buscará a lista de produtos.
+      // Calls the 'updateProduct' function from the CONTEXT.
+      // The context will make the API call and then re-fetch the product list.
       await updateProduct(id, formData);
 
       alert('Produto atualizado com sucesso!');
       navigate('/dashboard/produtos');
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setError(err.message || "Não foi possível atualizar o produto.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 1. Enquanto os dados estão carregando, exibe o Loading.
+  // 1. While data is loading, display the Loading component.
   if (loading) return <Loading size="lg" />;
   
-  // 2. Se ocorreu um erro na busca, exibe a mensagem de erro.
+  // 2. If an error occurred during the fetch, display the error message.
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
 
-  // 3. (MUDANÇA CRUCIAL) Se o carregamento terminou, mas o produto não foi encontrado, não renderiza o formulário.
+  // 3. (CRUCIAL CHANGE) If loading is finished but the product was not found, do not render the form.
   if (!product) return <p className="text-center py-10">Produto não encontrado.</p>;
 
-  // 4. Se tudo deu certo, renderiza a página com o formulário.
+  // 4. If everything went well, render the page with the form.
   return (
     <div>
       <Navbar />
@@ -87,13 +85,13 @@ const ProductUpdate = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h1 className="text-2xl font-bold mb-6">Editar: {product.name}</h1>
             
-            {/* CORREÇÃO DAS PROPS PASSADAS PARA O ProductForm */}
+            {/* CORRECTION OF PROPS PASSED TO ProductForm */}
             <ProductForm
               isAdd={false}
-              product={product} // Passa os dados do produto para preencher o formulário
-              categories={categories} // Passa a lista de categorias para o dropdown
-              onFormSubmit={handleUpdateProduct} // Passa a função de submit correta
-              isSubmitting={isSubmitting} // Passa o estado de "enviando"
+              product={product} // Passes the product data to pre-fill the form.
+              categories={categories} // Passes the categories list to the dropdown.
+              onFormSubmit={handleUpdateProduct} // Passes the correct submit function.
+              isSubmitting={isSubmitting} // Passes the "submitting" state.
             />
           </div>
         </div>

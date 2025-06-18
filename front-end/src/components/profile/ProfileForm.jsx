@@ -1,94 +1,92 @@
-// src/components/profile/ProfileForm.jsx
+import { useForm } from 'react-hook-form'; // Imports the useForm hook for form management.
+import { z } from 'zod'; // Imports the Zod library for schema validation.
+import { zodResolver } from '@hookform/resolvers/zod'; // Imports the resolver to use Zod with react-hook-form.
+import { useAuth } from "../../contexts/AuthContext"; // Imports a custom hook to access authentication context.
+import { useUser } from "../../contexts/UserContext"; // Imports a custom hook to access user data functions.
+import { useState, useEffect } from "react"; // Imports React hooks for state and side effects.
+import InputMask from 'react-input-mask'; // Imports a component for masked inputs.
 
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from "../../contexts/AuthContext";
-import { useUser } from "../../contexts/UserContext";
-import { useState, useEffect } from "react";
-import InputMask from 'react-input-mask';
-
-// Schema de validação para o perfil
+// Validation schema for the profile
 const profileSchema = z.object({
-  name: z.string().min(3, "O nome deve ter no mínimo 3 caracteres."),
-  email: z.string().email("Formato de e-mail inválido."),
-   phone: z.preprocess(
-    // Primeiro, limpa tudo que não for dígito
-    (val) => String(val).replace(/\D/g, ''),
-    // Em seguida, valida a string de dígitos puros
-    z.string().min(10, { message: "Telefone inválido, precisa de 10 ou 11 dígitos." })
-              .max(11, { message: "Telefone inválido, não pode ter mais de 11 dígitos." })
+  name: z.string().min(3, "O nome deve ter no mínimo 3 caracteres."), // Validates the name field.
+  email: z.string().email("Formato de e-mail inválido."), // Validates the email field.
+  phone: z.preprocess( // Defines custom preprocessing for the phone field.
+    (val) => String(val).replace(/\D/g, ''), // Removes all non-digit characters.
+    z.string().min(10, { message: "Telefone inválido, precisa de 10 ou 11 dígitos." }) // Validates the cleaned string to have 10 or 11 digits.
+             .max(11, { message: "Telefone inválido, não pode ter mais de 11 dígitos." })
   ),
 });
 
-const ProfileForm = () => {
-  const { user, setUser } = useAuth();
-  const { updateUserProfile } = useUser();
-  const [apiFeedback, setApiFeedback] = useState({ error: '', success: '' });
+const ProfileForm = () => { // Defines the ProfileForm component.
+  const { user, setUser } = useAuth(); // Destructures user data and setter from the Auth context.
+  const { updateUserProfile } = useUser(); // Destructures the update function from the User context.
+  const [apiFeedback, setApiFeedback] = useState({ error: '', success: '' }); // State to hold feedback messages from the API.
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
-    resolver: zodResolver(profileSchema),
-    // AQUI ESTÁ A CORREÇÃO:
-    // Usamos '|| ""' para garantir que, se um campo for nulo ou undefined,
-    // ele seja inicializado como uma string vazia.
-    defaultValues: {
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ // Destructures methods from useForm.
+    resolver: zodResolver(profileSchema), // Configures the form to use the Zod schema.
+    defaultValues: { // Sets the default values for the form fields.
       name: user.name || '',
       email: user.email || '',
       phone: user.phone || '',
     }
   });
 
-  // Atualiza o formulário se o usuário do contexto mudar
-  useEffect(() => {
-    // Esta função garante que o formulário seja preenchido com os dados
-    // quando eles chegam do AuthContext.
-    if(user) {
-      reset({
+  // Updates the form if the user from the context changes
+  useEffect(() => { // Hook to sync the form with context data.
+    if(user) { // Checks if user data is available.
+      reset({ // Resets the form with the latest user data.
         name: user.name || '',
         email: user.email || '',
         phone: user.phone || '',
       });
     }
-  }, [user, reset]);
+  }, [user, reset]); // Dependency array: runs the effect when user or reset changes.
 
-  const handleUpdate = async (data) => {
-    setApiFeedback({ error: '', success: '' });
-    try {
-      const updatedUser = await updateUserProfile(data);
-      setUser(updatedUser); // Atualiza o estado global
-      setApiFeedback({ success: 'Perfil atualizado com sucesso!' });
-    } catch (error) {
-      setApiFeedback({ error: error.message || 'Falha ao atualizar o perfil.' });
+  const handleUpdate = async (data) => { // Defines an async function to handle form submission.
+    setApiFeedback({ error: '', success: '' }); // Resets previous feedback.
+    try { // Starts a try-catch block for the API call.
+      const updatedUser = await updateUserProfile(data); // Calls the update function from the context.
+      setUser(updatedUser); // Updates the global state in the Auth context.
+      setApiFeedback({ success: 'Perfil atualizado com sucesso!' }); // Sets a success message.
+    } catch (error) { // If the update fails...
+      setApiFeedback({ error: error.message || 'Falha ao atualizar o perfil.' }); // Sets an error message.
     }
   };
-  return (
-    <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4">
-      {apiFeedback.error && <div className="bg-red-100 text-red-700 p-3 rounded-md text-center">{apiFeedback.error}</div>}
-      {apiFeedback.success && <div className="bg-green-100 text-green-700 p-3 rounded-md text-center">{apiFeedback.success}</div>}
+  return ( // Returns the JSX for the form.
+    <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4"> {/* Form element with submit handler and styling. */}
+      {apiFeedback.error && <div className="bg-red-100 text-red-700 p-3 rounded-md text-center">{apiFeedback.error}</div>} {/* Displays API error message. */}
+      {apiFeedback.success && <div className="bg-green-100 text-green-700 p-3 rounded-md text-center">{apiFeedback.success}</div>} {/* Displays API success message. */}
       
-      <div className="space-y-1">
-        <label htmlFor="nameProfile">Nome completo</label>
-        <input id="nameProfile" {...register("name")} className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400" />
-        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+      <div className="space-y-1"> {/* Container for the name input. */}
+        <label htmlFor="nameProfile">Nome completo</label> {/* Label for the input. */}
+        <input id="nameProfile" {...register("name")} className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400" /> {/* Name input field. */}
+        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>} {/* Displays validation error. */}
       </div>
-      <div className="space-y-1">
-        <label htmlFor="emailProfile">Email</label>
-        <input id="emailProfile" type="email" {...register("email")} className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400" />
-        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+      <div className="space-y-1"> {/* Container for the email input. */}
+        <label htmlFor="emailProfile">Email</label> {/* Label for the input. */}
+        <input id="emailProfile" type="email" {...register("email")} className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400" /> {/* Email input field. */}
+        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>} {/* Displays validation error. */}
       </div>
-      <div className="space-y-1">
-        <label htmlFor="phoneProfile">Telefone</label>
-        <InputMask mask="(99) 99999-9999" {...register("phone")}>
-          {(inputProps) => <input {...inputProps} id="phoneProfile" type="tel" className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400" />}
+      <div className="space-y-1"> {/* Container for the phone input. */}
+        <label htmlFor="phoneProfile">Telefone</label> {/* Label for the input. */}
+       <InputMask mask="(99) 99999-9999" {...register("phone")}>
+          {(inputProps) => (
+            <input 
+              {...inputProps} 
+              id="registerPhone" 
+              type="tel" 
+              className={`w-full px-3 py-2 border rounded-lg border-gray-300 focus:outline-none focus:border-gray-400 ${errors.phone ? 'border-red-500' : ''}`} 
+            />
+          )}
         </InputMask>
-        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
+        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>} {/* Displays validation error. */}
       </div>
       
-      <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-blue-300">
-        {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
+      <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-blue-300"> {/* Submit button. */}
+        {isSubmitting ? 'Salvando...' : 'Salvar Alterações'} {/* Dynamic button text. */}
       </button>
     </form>
   );
 };
 
-export default ProfileForm;
+export default ProfileForm; // Exports the component.

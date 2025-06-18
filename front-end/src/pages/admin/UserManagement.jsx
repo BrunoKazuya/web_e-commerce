@@ -1,23 +1,24 @@
-import { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Search, Plus, Edit, Trash2, User } from "lucide-react";
-import Loading from "../../components/ui/Loading";
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
-import apiClient from "../../utils/apiClient";
-import { useAuth } from "../../contexts/AuthContext"; // Para pegar o ID do admin logado
+/* eslint-disable no-unused-vars */
+import { useEffect, useState, useMemo } from "react"; // Imports React hooks.
+import { Link } from "react-router-dom"; // Imports Link for navigation.
+import { Plus, Edit, Trash2, User } from "lucide-react"; // Imports icons.
+import Loading from "../../components/ui/Loading"; // Imports the loading spinner.
+import Footer from "../../components/Footer"; // Imports the Footer component.
+import Navbar from "../../components/Navbar"; // Imports the Navbar component.
+import apiClient from "../../utils/apiClient"; // Imports the API client.
+import { useAuth } from "../../contexts/AuthContext"; // To get the logged-in admin's ID.
 
-const UserManagement = () => {
-  const { user: adminUser } = useAuth(); // Pega o usuário admin logado
-  const [users, setUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+const UserManagement = () => { // Defines the UserManagement admin page component.
+  const { user: adminUser } = useAuth(); // Gets the logged-in admin user.
+  const [users, setUsers] = useState([]); // State to store the list of all users.
+  const [searchTerm, setSearchTerm] = useState(""); // State for the search filter.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async () => { // Defines an async function to fetch all users.
     setLoading(true);
     try {
-      // Usa a rota de admin para buscar todos os usuários
+      // Uses the admin route to fetch all users.
       const fetchedUsers = await apiClient('/users/admin/all');
       setUsers(fetchedUsers);
     } catch (err) {
@@ -27,15 +28,15 @@ const UserManagement = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { // Effect to fetch users when the component mounts.
     fetchUsers();
   }, []);
 
-  const handleRemoveUser = async (userId) => {
+  const handleRemoveUser = async (userId) => { // Defines an async function to handle user removal.
     if (window.confirm('Tem certeza que deseja deletar este usuário?')) {
       try {
         await apiClient(`/users/admin/${userId}`, { method: 'DELETE' });
-        // Atualiza a UI otimisticamente
+        // Updates the UI optimistically.
         setUsers(currentUsers => currentUsers.filter(u => u._id !== userId));
       } catch (err) {
         alert(`Erro ao deletar usuário: ${err.message}`);
@@ -43,7 +44,7 @@ const UserManagement = () => {
     }
   };
 
-  const filteredUsers = useMemo(() =>
+  const filteredUsers = useMemo(() => // Memoizes the filtering logic for performance.
     users.filter(user =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -52,7 +53,7 @@ const UserManagement = () => {
   if (loading) return <Loading size="lg" />;
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
 
-  return (
+  return ( // Returns the JSX for the page.
     <>
       <Navbar />
       <div className="max-w-7xl mx-auto px-6 py-10">
@@ -67,9 +68,9 @@ const UserManagement = () => {
           </Link>
         </div>
 
-        {/* Search e Tabela */}
+        {/* Search and Table */}
         <div className="bg-white p-4 rounded-lg shadow-sm mb-8">
-          {/* ... input de busca ... */}
+          {/* ... search input ... */}
         </div>
         <div className="bg-white rounded-lg shadow-md overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -88,7 +89,7 @@ const UserManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap"><span className={`px-2 py-1 rounded-full text-xs capitalize ${user.role === 'admin' ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"}`}>{user.role}</span></td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                    {/* Impede que o admin edite ou delete a si mesmo */}
+                    {/* Prevents an admin from editing or deleting themselves. */}
                     {adminUser._id === user._id ? (
                        <span className="text-xs text-gray-400">Ação não permitida</span>
                     ) : (

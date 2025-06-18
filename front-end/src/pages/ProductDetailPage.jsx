@@ -1,45 +1,45 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer.jsx";
-import { ShoppingCart, Minus, Plus } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import ProductCard from "../components/product/ProductCard.jsx";
-import "swiper/css";
-import { useEffect, useState, useMemo } from "react";
-import { useProduct } from "../contexts/ProductContext.jsx";
-import { useUser } from "../contexts/UserContext.jsx";
-import Loading from "../components/ui/Loading.jsx";
-import apiClient from "../utils/apiClient.jsx";
+import Navbar from "../components/Navbar"; // Imports the Navbar component.
+import Footer from "../components/Footer.jsx"; // Imports the Footer component.
+import { ShoppingCart, Minus, Plus } from "lucide-react"; // Imports icons.
+import { Link, useParams, useNavigate } from "react-router-dom"; // Imports routing hooks.
+import { Swiper, SwiperSlide } from "swiper/react"; // Imports Swiper components for carousels.
+import ProductCard from "../components/product/ProductCard.jsx"; // Imports the ProductCard component.
+import "swiper/css"; // Imports Swiper's default CSS.
+import { useEffect, useState, useMemo } from "react"; // Imports React hooks.
+import { useProduct } from "../contexts/ProductContext.jsx"; // Imports the product context hook.
+import { useUser } from "../contexts/UserContext.jsx"; // Imports the user context hook.
+import Loading from "../components/ui/Loading.jsx"; // Imports the loading spinner component.
+import apiClient from "../utils/apiClient.jsx"; // Imports the pre-configured API client.
 
-const ProductDetailPage = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+const ProductDetailPage = () => { // Defines the ProductDetailPage component.
+  const navigate = useNavigate(); // Initializes the navigate function.
+  const { id } = useParams(); // Gets the product ID from the URL parameters.
   
-  // Pega a lista completa de produtos do contexto para encontrar os "relacionados"
+  // Gets the complete list of products from the context to find "related" ones.
   const { products: allProducts } = useProduct();
-  const { addCart } = useUser();
+  const { addCart } = useUser(); // Gets the addCart function from the user context.
 
-  // Estado local para esta página
+  // Local state for this page.
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Efeito para buscar os dados do produto específico ao carregar a página ou mudar o ID
+  // Effect to fetch the specific product's data on page load or when the ID changes.
   useEffect(() => {
     const loadProduct = async () => {
-      if (!id) {
+      if (!id) { // If there is no ID, navigate away.
         navigate('/not-found');
         return;
       }
       
-      setLoading(true);
-      setError('');
+      setLoading(true); // Sets loading state to true.
+      setError(''); // Clears previous errors.
       try {
-        const fetchedProduct = await apiClient(`/products/${id}`);
-        setProduct(fetchedProduct);
+        const fetchedProduct = await apiClient(`/products/${id}`); // Fetches the product by ID.
+        setProduct(fetchedProduct); // Sets the fetched product to state.
         
-        // Define a quantidade inicial baseada no estoque
+        // Sets the initial quantity based on stock.
         if (fetchedProduct.inStock > 0) {
           setQuantity(1);
         } else {
@@ -50,63 +50,63 @@ const ProductDetailPage = () => {
         console.error("Erro ao buscar produto:", err);
         setError("Produto não encontrado.");
       } finally {
-        setLoading(false);
+        setLoading(false); // Sets loading state to false.
       }
     };
 
     loadProduct();
-  }, [id, navigate]);
+  }, [id, navigate]); // Dependency array: runs when 'id' or 'navigate' changes.
 
-  // Calcula os produtos relacionados de forma otimizada
+  // Calculates related products in an optimized way.
   const relatedProducts = useMemo(() => {
-    if (!product || !allProducts) return [];
+    if (!product || !allProducts) return []; // Returns early if data is not available.
 
     return allProducts.filter(p => 
-      p.category?._id === product.category?._id && // Mesma categoria
-      p._id !== product._id &&                     // Não é o próprio produto
-      p.inStock > 0                                // Apenas produtos em estoque
-    ).slice(0, 8);                                 // Limita a 8 produtos
-  }, [product, allProducts]);
+      p.category?._id === product.category?._id && // Same category.
+      p._id !== product._id &&                     // Not the product itself.
+      p.inStock > 0                                // Only products in stock.
+    ).slice(0, 8);                                 // Limits to 8 products.
+  }, [product, allProducts]); // Dependency array.
 
 
-  const adjustQuantity = (amount) => {
+  const adjustQuantity = (amount) => { // Function to increase or decrease quantity.
     const newQuantity = Number(quantity) + amount;
-    if (product && newQuantity >= 1 && newQuantity <= product.inStock) {
+    if (product && newQuantity >= 1 && newQuantity <= product.inStock) { // Ensures quantity is within valid range.
       setQuantity(newQuantity);
     }
   };
 
-  // Função para adicionar ao carrinho
+  // Function to add the product to the cart.
   const handleAddToCart = () => {
     if (product && product.inStock > 0 && Number(quantity) > 0) {
       addCart(product, Number(quantity));
-      navigate("/carrinho");
+      navigate("/carrinho"); // Navigates to the cart page after adding.
     }
   };
   
-  // Renderização condicional para loading e erro
+  // Conditional rendering for loading and error states.
   if (loading) return <Loading size="lg"/>;
   if (error) return <div className="h-screen flex items-center justify-center text-center text-red-500">{error}</div>;
   if (!product) return <div className="h-screen flex items-center justify-center text-center">Produto não encontrado.</div>;
 
-  // Variáveis para controle da UI
+  // UI control variables.
   const isOutOfStock = product.inStock === 0;
   const canDecrease = quantity > 1;
   const canIncrease = quantity < product.inStock;
 
-  return (
+  return ( // Returns the JSX for the page.
     <>
       <Navbar />
       <main className="py-12">
         <div className="max-w-7xl mx-auto px-6 sm:px-4 lg:px-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             
-            {/* Imagem do Produto */}
+            {/* Product Image */}
             <div className="rounded-lg shadow-md bg-white p-4">
               <img src={`http://localhost:3000${product.image}`} alt={product.name} className="w-full h-auto rounded-md object-contain" style={{maxHeight: '500px'}}/>
             </div>
 
-            {/* Detalhes do Produto */}
+            {/* Product Details */}
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold mb-4">{product.name}</h1>
               <p className="text-3xl font-bold text-blue-600 my-4">{product.price.toLocaleString("pt-BR", { style: 'currency', currency: 'BRL' })}</p>
@@ -125,7 +125,7 @@ const ProductDetailPage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                {!isOutOfStock && (
+                {!isOutOfStock && ( // Renders quantity selector only if the product is in stock.
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={() => adjustQuantity(-1)}
@@ -147,7 +147,7 @@ const ProductDetailPage = () => {
                   </div>
                 )}
                 
-                <button
+                <button // Add to cart button.
                   onClick={handleAddToCart}
                   disabled={isOutOfStock || Number(quantity) === 0}
                   className={`flex-1 text-white px-4 py-2 rounded-lg flex items-center justify-center font-semibold transition-colors ${
@@ -161,23 +161,18 @@ const ProductDetailPage = () => {
             </div>
           </div>
 
-          {/* Produtos Relacionados */}
+          {/* Related Products */}
           {relatedProducts.length > 0 && (
             <section className="py-12 border-t border-gray-200">
               <h2 className="text-2xl font-bold mb-4">Produtos relacionados</h2>
-              <Swiper spaceBetween={20}
+              <Swiper // Carousel for related products.
+                spaceBetween={20}
                 slidesPerView={1}
                 loop={true}
                 breakpoints={{
-                  640: {
-                    slidesPerView: 2,
-                  },
-                  800: {
-                    slidesPerView: 3,
-                  },
-                  1080: {
-                    slidesPerView: 4,
-                  },
+                  640: { slidesPerView: 2, },
+                  800: { slidesPerView: 3, },
+                  1080: { slidesPerView: 4, },
                 }} >
                 {relatedProducts.map((p) => (
                   <SwiperSlide key={p._id}><ProductCard product={p} /></SwiperSlide>
