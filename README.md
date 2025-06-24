@@ -59,24 +59,38 @@
 │   ├── carrinho.html
 │   ├── index.html
 │   ├── products.html
-├── public
-|   ├── img
-│   ├── favicon.ico
-├── src
-│   ├── App.jsx
-│   ├── components
-│   ├── pages
-│   ├── contexts
-│   ├── index.css
-│   ├── main.jsx
+├── milestone2
+|   ├── public
+|   |   ├── img
+|   │   ├── favicon.ico
+|   ├── src
+|   │   ├── App.jsx
+|   │   ├── components
+|   │   ├── pages
+|   │   ├── contexts
+|   │   ├── index.css
+|   │   ├── main.jsx
+├── front-end
+|   ├── public
+|   |   ├── img
+|   │   ├── favicon.ico
+|   ├── src
+|   │   ├── App.jsx
+|   │   ├── components
+|   │   ├── pages
+|   │   ├── contexts
+|   │   ├── index.css
+|   │   ├── main.jsx
+├── back-end
+|   ├── controllers
+|   ├── middleware
+|   ├── models
+|   ├── public
+|   ├── routes
+|   ├── utils
+|   ├── app.js
 ├── readme.md
 ```
-A estrutura do repositório foi concebida para refletir a evolução do protótipo estático em HTML/CSS/JS para uma aplicação React organizada e escalável. Na raiz, temos duas pastas históricas: capturas/, que armazena todas as screenshots e mockups do protótipo inicial, e milestone1/, onde residem as páginas estáticas (index.html, products.html, carrinho.html) acompanhadas de seus arquivos de estilo (em css/) e de comportamento em JavaScript (em javascript/), além das imagens de produto em milestone1/img/ e do diagrama de navegação.
-
-A pasta public/ é reservada aos ativos estáticos que serão servidos diretamente pelo build do React — como o favicon, imagens de produto e eventuais arquivos que não passam pelo bundler. Já o coração da aplicação em React está em src/, com seu ponto de entrada e roteamento (main.jsx). Dentro de src/contexts/ ficam os providers de estado global (por exemplo, de produtos, de usuário e de carrinho), enquanto src/components/ concentra todos os blocos de interface reutilizáveis (Navbar, Footer, ProductCard, formulários etc.) e src/pages/ reúne cada view de rota (Home, Produtos, Detalhe de Produto, Carrinho e 404).
-
-Esse layout modular permite reuso consistente entre as páginas, separando claramente lógica de dados (nos contexts) e apresentação (nos componentes), e facilita tanto a manutenção quanto a adição de novas funcionalidades sem comprometer a organização do código.
-
 > *Observação:* todas as imagens de snapshots do prototipo estão em `capturas/` na raiz do projeto.
 
 
@@ -88,8 +102,13 @@ Esse layout modular permite reuso consistente entre as páginas, separando clara
 ### 3.1 Como instalar
 - Node.js ≥ 14 
 - git clone https://github.com/BrunoKazuya/web_e-commerce
-- cd web_e-commerce
 - npm install
+- cd front-end
+- npm install
+- cd ..
+- cd back-end
+- npm install
+- cd ..
 - npm run dev
 
 Pronto com isso você pode acessar no navegador http://localhost:5173
@@ -100,20 +119,7 @@ Pronto com isso você pode acessar no navegador http://localhost:5173
 |-----------------|-----------|
 | Visitante | Ele consegue navegar pelas paginas home, produtos, sobre, contato, pagina do produto e autenticação. Ele não consegue adicionar itens ao carrinho e não efetua compra |
 | Cliente | Para ser esse tipo de usuário basta criar uma conta. Ele pode adicionar itens ao carrinho e efetuar compras, além disso ele pode editar o seu perfil |
-| Administrador | Por padrão existe um administrador para acessar basta fazer o login com o email: admin@admin.com e a senha: admin. Ele pode acessar a dashboard onde pode gerenciar a loja, adicionando, atualizando e deletando produtos e pode adicionar usuário, atualizar a permissão dele e também pode deletar |
-
-### 3.3 LocalStorage
-O aplicativo faz uso do localStorage para persistir toda a informação necessária entre sessões, incluindo:
-
-- loggedIn: flag booleana que indica se há um usuário autenticado.
-
-- user: objeto JSON com os dados do usuário atualmente logado (nome, e-mail, papel etc.).
-
-- products: array de objetos que representa o catálogo de produtos da loja.
-
-- users: array de objetos que contém todos os perfis de usuário cadastrados no sistema.
-
-Sempre que o usuário faz login, adiciona itens ao carrinho ou edita seu perfil, nós atualizamos esses itens no localStorage, garantindo que a aplicação possa recarregar o estado completo caso o navegador seja fechado ou a página seja atualizada.
+| Administrador | Por padrão existe um administrador para acessar basta fazer o login com o email: admin@admin.com e a senha: 12345678. Ele pode acessar a dashboard onde pode gerenciar a loja, adicionando, atualizando e deletando produtos e pode adicionar usuário, atualizar a permissão dele e também pode deletar |
 
 ## 4 • Funcionalidades
 
