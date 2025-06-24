@@ -119,7 +119,7 @@ Pronto com isso você pode acessar no navegador http://localhost:5173
 |-----------------|-----------|
 | Visitante | Ele consegue navegar pelas paginas home, produtos, sobre, contato, pagina do produto e autenticação. Ele não consegue adicionar itens ao carrinho e não efetua compra |
 | Cliente | Para ser esse tipo de usuário basta criar uma conta. Ele pode adicionar itens ao carrinho e efetuar compras, além disso ele pode editar o seu perfil |
-| Administrador | Por padrão existe um administrador para acessar basta fazer o login com o email: admin@admin.com e a senha: admin. Ele pode acessar a dashboard onde pode gerenciar a loja, adicionando, atualizando e deletando produtos e pode adicionar usuário, atualizar a permissão dele e também pode deletar |
+| Administrador | Por padrão existe um administrador para acessar basta fazer o login com o email: admin@admin.com e a senha: 12345678. Ele pode acessar a dashboard onde pode gerenciar a loja, adicionando, atualizando e deletando produtos e pode adicionar usuário, atualizar a permissão dele e também pode deletar |
 
 ## 4 • Funcionalidades
 
