@@ -72,7 +72,7 @@ const CategoryForm = ({
 
     try {
       // Make a direct fetch call to the dedicated upload route.
-      const res = await fetch(`http://localhost:3000/upload/categories`, {
+      const res = await fetch(`http://localhost:3000/api/upload/categories`, {
         method: "POST",
         body: formData,
       });
